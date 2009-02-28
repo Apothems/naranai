@@ -1,0 +1,56 @@
+
+<IfModule mod_rewrite.c>
+RewriteEngine  on
+
+# This just redirects the files so they're a bit simpler to find.
+# Also doesn't use a fucking script to load files. So browsers can cache and so on.
+# Fuck sake shimmie is stupid.
+RewriteRule ^images/([0-9a-f]{2})([0-9a-f]{30}).*$  images/$1/$1$2 [L]
+RewriteRule ^thumbs/([0-9a-f]{2})([0-9a-f]{30}).*$  thumbs/$1/$1$2 [L]
+
+RewriteRule ^post/list/?$ index.php [L]
+RewriteRule ^post/list/(\d*)(/)?$ index.php?pagenum=$1 [L]
+RewriteRule ^post/list/([^/]*)/?$ index.php?q=$1 [L]
+RewriteRule ^post/list/(.*)/(\d*)/?$ index.php?q=$1&pagenum=$2 [L]
+RewriteRule ^post/view/(\d*)/?$ view.php?picture_id=$1 [L]
+RewriteRule ^group/list/?$ group_list.php [L]
+RewriteRule ^group/view/(\d*)/?$ group_view.php?group=$1 [L]
+RewriteRule ^tags/list/?$ tag_view.php [L]
+RewriteRule ^tags/list/(\d*)(/)?$ tag_view.php?pagenum=$1 [L]
+RewriteRule ^tags/list/normal/?$ tag_view.php?type=normal
+RewriteRule ^tags/list/normal/(\d*)(/)?$ tag_view.php?type=normal&pagenum=$1 [L]
+RewriteRule ^tags/list/series/?$ tag_view.php?type=series [L]
+RewriteRule ^tags/list/series/(\d*)(/)?$ tag_view.php?type=series&pagenum=$1 [L]
+RewriteRule ^tags/list/character/?$ tag_view.php?type=character [L]
+RewriteRule ^tags/list/character/(\d*)(/)?$ tag_view.php?type=character&pagenum=$1 [L]
+RewriteRule ^tags/list/artist/?$ tag_view.php?type=artist [L]
+RewriteRule ^tags/list/artist/(\d*)(/)?$ tag_view.php?type=artist&pagenum=$1 [L]
+RewriteRule ^save/?$ save_info.php [L]
+RewriteRule ^login/?$ login.php [L]
+RewriteRule ^register/err/(\d*)/?$ register.php?err=$1 [L]
+RewriteRule ^register/?$ register.php [L]
+RewriteRule ^registration/?$ create_user.php [L]
+RewriteRule ^logout/?$ logout.php [L]
+RewriteRule ^comment/?$ comment_add.php [L]
+RewriteRule ^post/upload/tag/?$ upload_tagger.php [L]
+RewriteRule ^post/upload/?$ upload.php [L]
+RewriteRule ^uploader/(\d*)/(.*)/?$ file_upload_script_thingy.php?user_id=$1&group=$2 [L]
+RewriteRule ^uploader/(\d*)/?$ file_upload_script_thingy.php?user_id=$1 [L]
+RewriteRule ^uploader/?$ file_upload_script_thingy.php [L]
+RewriteRule ^tags/add/?$ edit_tag.php [L]
+RewriteRule ^tags/edit/(\d*)/?$ edit_tag.php?tag=$1 [L]
+RewriteRule ^tags/edit/commit/?$ save_tag.php [L]
+RewriteRule ^admin/delete/(\d*)/?$ admin/deletorizer.php?picture_id_number=$1 [L]
+RewriteRule ^note/save/?$ note_saver.php [L]
+
+# Redirect to fucking fat face.
+ErrorDocument 404 /post/list
+</IfModule>
+
+<IfModule mod_php5.c>
+	php_flag register_globals 0 
+	php_flag magic_quotes_gpc 0 
+	php_flag magic_quotes_runtime 0
+</IfModule>
+
+DefaultType image/jpeg
