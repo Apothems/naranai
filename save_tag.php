@@ -1,7 +1,7 @@
 <?php
 	
 	require_once('hibbity/dbinfo.php');
-	mysql_select_db("iki_image");
+	
 	
 	$id = mysql_real_escape_string($_POST["tag_id"]);
 	$tag_name = strtolower(mysql_real_escape_string($_POST["name_field"]));

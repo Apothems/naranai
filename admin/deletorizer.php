@@ -7,7 +7,7 @@
 	}
 	
 	require_once('hibbity/dbinfo.php');
-	mysql_select_db("iki_image");
+	
 	
 	$id  = $_GET["picture_id_number"];
 	

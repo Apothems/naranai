@@ -1,7 +1,7 @@
 <?php
 
 	require_once('hibbity/dbinfo.php');
-	mysql_select_db("iki_image");
+	
 	
 	$page_type = "post";
 	$head 		= ' <script src="/lib/formcheck.js" type="text/javascript"></script>

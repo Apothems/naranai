@@ -1,7 +1,7 @@
 <?php
 
 	require_once('hibbity/dbinfo.php');
-	mysql_select_db("iki_image");
+	
 	
 	$urls 	  = $_GET["url"];
 	$urls 	  = array_unique($urls);

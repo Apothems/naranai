@@ -1,7 +1,7 @@
 <?php
 
 require_once('hibbity/dbinfo.php');
-mysql_select_db("iki_image");
+
 require_once("lib/functions.php");
 	
 	$pic = $_GET["q"];
