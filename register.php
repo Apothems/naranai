@@ -38,7 +38,7 @@
 						@import url(\'/styles/formcheck.css\');
 					</style>
 					';
-	$page_title = "Registration - img.dasaku";
+	$page_title = "Registration - " . $site_name;
 	
 	require_once("header.php");
 	

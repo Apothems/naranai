@@ -47,7 +47,7 @@
 	$get = mysql_query($sql);
 	$run = mysql_fetch_assoc($get);
 	$title = $run["group_name"];
-	$page_title = "Viewing Group: " . $title . " - img.dasaku";
+	$page_title = "Viewing Group: " . $title . " - " . $site_name;
 	
 	$total = mysql_fetch_row(mysql_query("SELECT FOUND_ROWS()"));
 	$pages = ceil($total[0] / $pics);
@@ -118,7 +118,7 @@
 					echo '
 							<span class="list_image">
 								<a href="/post/view/' . $id['id'][$i] . '">
-									<img src="http://img.dasaku.net/thumbs/' . $id['hash'][$i] . '.jpg" alt="' . $imgtags . '" title="' . $imgtags . '"' . $class . ' />
+									<img src="' . $base_url . '/thumbs/' . $id['hash'][$i] . '.jpg" alt="' . $imgtags . '" title="' . $imgtags . '"' . $class . ' />
 								</a>
 							</span>';
 				}

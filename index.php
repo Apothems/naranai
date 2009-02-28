@@ -16,7 +16,7 @@
 		
 	}
 	
-	$page_title = "Viewing " . $title . " - img.dasaku";
+	$page_title = "Viewing " . $title . " - " . $site_name;
 	
 	if($_GET["pagenum"]) $pagenum = $_GET["pagenum"] - 1;
 	$limit = $pics * $pagenum;
@@ -128,7 +128,7 @@
 					echo '
 							<span class="list_image">
 								<a href="/post/view/' . $id['id'][$i] . '">
-									<img src="http://img.dasaku.net/thumbs/' . $id['hash'][$i] . '.jpg" alt="' . $imgtags . '" title="' . $imgtags . '"' . $class . ' />
+									<img src="' . $base_url . '/thumbs/' . $id['hash'][$i] . '.jpg" alt="' . $imgtags . '" title="' . $imgtags . '"' . $class . ' />
 								</a>
 							</span>';
 				}

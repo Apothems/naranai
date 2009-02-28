@@ -11,7 +11,7 @@
 					</style>
 					";
 	$thing = "Add Tag";
-	$page_title = "Add Tag - img.dasaku";
+	$page_title = "Add Tag - " . $site_name;
 	if(isset($_GET["tag"]))
 	{
 		$sql = "SELECT tag, type FROM `tags` WHERE `id` = " . $_GET["tag"];
@@ -33,7 +33,7 @@
 				$series = ' selected="selected"';
 				break;
 		}
-		$page_title = "Edit Tag: " . $run["tag"] . " - img.dasaku";
+		$page_title = "Edit Tag: " . $run["tag"] . " - " . $site_name;
 	}
 	
 	

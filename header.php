@@ -1,6 +1,6 @@
 <?php
 	require_once("lib/functions.php");
-	
+	require_once('hibbity/config.php');
 	
 	$post_menu =	array
 					(
@@ -66,7 +66,7 @@
 
 	if($page_title == "")
 	{
-		$page_title = "img.dasaku";	
+		$page_title = $site_name;	
 	}
 
 include_once('tag_search.php');
@@ -117,7 +117,7 @@ include_once('tag_search.php');
 <div id="header">
 	
     <div id="site_name">
-    	img.dasaku
+    	<?php echo $site_name; ?>
     </div>
 
     <div id="main_menu">

@@ -69,7 +69,7 @@
 						@import url('/styles/upload.css');
 					</style>
 					";
-	$page_title = "Image Upload - img.dasaku";
+	$page_title = "Image Upload - " . $site_name;
 	
 	require_once("header.php");
 	

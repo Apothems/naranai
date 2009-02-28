@@ -1,6 +1,7 @@
 <?php
  
 	require_once('hibbity/dbinfo.php');
+	require_once('hibbity/config.php');
 	
  	
  	
@@ -58,8 +59,8 @@ if (isset($_FILES['photoupload']) )
 			$current_img_width = $size[0];
 			$current_img_height = $size[1];
 
-			$thumb_name = "/home/digiwombat/iki/img/thumbs/" . $ab . "/" . $hash;
-			$image_name = "/home/digiwombat/iki/img/images/" . $ab . "/" . $hash;
+			$thumb_name = $site_dir . "/thumbs/" . $ab . "/" . $hash;
+			$image_name = $site_dir . "/images/" . $ab . "/" . $hash;
  		    
 			$too_big_diff_ratio = $current_img_width/$max_width;
 			$new_img_width = $max_width;

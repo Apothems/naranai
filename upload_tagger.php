@@ -59,7 +59,7 @@
 					</style>
 					';
 	
-	$page_title = "Tag your images - img.dasaku";
+	$page_title = "Tag your images - " . $site_name;
 	
 	if(isset($_COOKIE['user_id']))
 	{
@@ -106,7 +106,7 @@
 					?>
 					<span class="list_image">
 								<a href="/post/view/<?php echo $id['id']; ?>">
-									<img src="http://img.dasaku.net/thumb/<?php echo $id['id']; ?>.jpg" alt="" title="" />
+									<img src="' . $base_url . '/thumb/<?php echo $id['id']; ?>.jpg" alt="" title="" />
 								</a>
                                 <div class="edit">
                                     <form id="form_<?php echo $id['id']; ?>" action="/save" method="post">

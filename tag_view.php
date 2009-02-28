@@ -21,7 +21,7 @@
 	$sql = "SELECT id FROM `tags`" . $tag_type . " ORDER BY tag";
 	$get = mysql_query($sql);
 	
-	$page_title = "Viewing " . $type . " List - img.dasaku";
+	$page_title = "Viewing " . $type . " List - " . $site_name;
 	
 	$total = mysql_num_rows($get);
 	$pages = ceil($total / $pics);

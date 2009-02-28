@@ -1,6 +1,7 @@
 <?php
 
 	require_once('hibbity/dbinfo.php');
+	require_once('hibbity/config.php');
 	
 	
 	$urls 	  = $_GET["url"];
@@ -34,8 +35,8 @@
 				$hash = md5($url.microtime());
 				$ab = substr($hash, 0, 2);
 				$max_width = '192';
-				$thumb_name = "/home/digiwombat/iki/img/thumbs/" . $ab . "/" . $hash;
-				$image_name = "/home/digiwombat/iki/img/images/" . $ab . "/" . $hash;
+				$thumb_name = $site_dir . "/thumbs/" . $ab . "/" . $hash;
+				$image_name = $site_dir . "/images/" . $ab . "/" . $hash;
 				
 				if(eregi("pixiv.net", $url))
 				{

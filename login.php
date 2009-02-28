@@ -16,7 +16,7 @@
 						@import url(\'/styles/formcheck.css\');
 					</style>
 					';
-	$page_title = "Login - img.dasaku";
+	$page_title = "Login - " . $site_name;
 	
 	
 	

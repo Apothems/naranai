@@ -34,7 +34,7 @@
 					</style>
 					';
 	
-	$page_title = "Post " . $run['id'] . " - img.dasaku";
+	$page_title = "Post " . $run['id'] . " - " . $site_name;
 	
 	$source = "None";
 	if($run['source'] != "")
@@ -208,7 +208,7 @@
 						</div>
 					</div>';
 				}
-				echo '<img id="main_image" src="http://img.dasaku.net/images/' . $run['hash'] . '.' . $run['ext'] . '" alt="" />';
+				echo '<img id="main_image" src="' . $base_url . '/images/' . $run['hash'] . '.' . $run['ext'] . '" alt="" />';
 				
 			?>
 
