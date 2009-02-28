@@ -1,6 +1,6 @@
 <?php
 	
-	require_once("/home/digiwombat/hosteeconn.php");
+	require_once('hibbity/dbinfo.php');
 	mysql_select_db("iki_image");
 	
 	$id = mysql_real_escape_string($_POST["picture_id"]);
