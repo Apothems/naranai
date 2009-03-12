@@ -1,6 +1,6 @@
 <?php
 
-
+require_once('../hibbity/dbinfo.php');
 
 function fuzzy_time( $time ) {
 
@@ -87,6 +87,25 @@ function fuzzy_time( $time ) {
  
   // more than ten years...
   return 'more than ten years ago';
+}
+
+function isadmin($userid)
+{
+	if(!isset($userid))
+	{
+		return false;
+	}
+	$sql = "SELECT admin  FROM `users` WHERE `id` = " . $userid;
+	$get = mysql_query($sql);
+	$run = mysql_fetch_assoc($get);
+	if($run['admin'] = 'Y')
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
 }
 
 ?>

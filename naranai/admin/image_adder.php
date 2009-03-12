@@ -1,8 +1,7 @@
 <?php
 
-	require_once('hibbity/dbinfo.php');
-	require_once('hibbity/config.php');
-	
+	require_once("/home/digiwombat/hosteeconn.php");
+	mysql_select_db("iki_image");
 	
 	$urls 	  = $_GET["url"];
 	$urls 	  = array_unique($urls);
@@ -35,8 +34,8 @@
 				$hash = md5($url.microtime());
 				$ab = substr($hash, 0, 2);
 				$max_width = '192';
-				$thumb_name = $site_dir . "/thumbs/" . $ab . "/" . $hash;
-				$image_name = $site_dir . "/images/" . $ab . "/" . $hash;
+				$thumb_name = "/home/digiwombat/iki/img/thumbs/" . $ab . "/" . $hash;
+				$image_name = "/home/digiwombat/iki/img/images/" . $ab . "/" . $hash;
 				
 				if(eregi("pixiv.net", $url))
 				{

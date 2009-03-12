@@ -2,7 +2,6 @@
 
 	require_once('hibbity/dbinfo.php');
 	
-	
 	$page_type = "post";
 	$head 		= ' <script src="/lib/formcheck.js" type="text/javascript"></script>
 					<script type="text/javascript">
@@ -34,7 +33,7 @@
 				setcookie("user_id", $run['id'], time() + 31556926);
 				setcookie("user_name", $run['name'], time() + 31556926);
 				setcookie("user_email", $run['email'], time() + 31556926);
-				header("Location: /post/list");
+				header("Location: " . $base_url . "/post/list");
 				exit();
 			}
 		}

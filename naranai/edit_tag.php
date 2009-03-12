@@ -3,7 +3,6 @@
 	require_once('hibbity/dbinfo.php');
 	
 	
-	
 	$page_type = "tags";
 	$head 		= " <script src=\"/lib/formcheck.js\" type=\"text/javascript\"></script>
 					<style type=\"text/css\">

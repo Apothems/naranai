@@ -2,12 +2,11 @@
 	
 	require_once('hibbity/dbinfo.php');
 	
-	
 	$id = mysql_real_escape_string($_POST["picture_id"]);
 	
 	if(!$id)
 	{
-		header("Location: /post/list");
+		header("Location: " . $base_url . "/post/list");
 		exit();
 	}
 	
@@ -106,6 +105,6 @@
 	$sql = "UPDATE `images` SET `source` = '" . $source . "', `rating` = " . $rating . " WHERE `id` = " . $id;
 	mysql_query($sql);
 
-	header("Location: /post/view/" . $id);
+	header("Location: " . $base_url . "/post/view/" . $id);
 
 ?>

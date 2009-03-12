@@ -1,7 +1,6 @@
 <?php
  
 	require_once('hibbity/dbinfo.php');
-	require_once('hibbity/config.php');
 	
  	
  	
@@ -158,7 +157,7 @@ else
 
 if($_POST["fail"] == "true" && !headers_sent())
 {
-	header('Location: /post/list');
+	header('Location: ' . $base_url . '/post/list');
 	exit();
 }
 

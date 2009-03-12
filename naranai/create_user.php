@@ -5,7 +5,6 @@ require_once('hibbity/dbinfo.php');
 
 
 
-
 if(isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email"]) && isset($_POST["agree"]))
 	{
 		$sql = "SELECT COUNT(*) as users FROM `users` WHERE `name` = '" . $_POST["username"] . "' OR `email` = '" . $_POST["email"] . "'";
@@ -14,7 +13,7 @@ if(isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email
 		
 		if($run['users'] > 0)
 		{
-			header("Location: /register/err/422");
+			header("Location: " . $base_url . "/register/err/422");
 			exit();
 		}
 		
@@ -38,18 +37,18 @@ if(isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email
 								   );";
 			mysql_query($sql);
 			
-			header("Location: /login");
+			header("Location: " . $base_url . "/login");
 			exit();
 		}
 		else
 		{
-			header("Location: /register/err/412");
+			header("Location: " . $base_url . "/register/err/412");
 			exit();
 		}
 	}
 else
 {
-	header("Location: /register/err/415");
+	header("Location: " . $base_url . "/register/err/415");
 	exit();
 }
 

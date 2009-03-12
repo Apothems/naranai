@@ -2,10 +2,9 @@
 
 	require_once('hibbity/dbinfo.php');
 	
-	
 	if($_COOKIE["user_id"])
 	{
-		header("Location: /post/list");
+		header("Location: " . $base_url . "/post/list");
 		exit();
 	}
 	

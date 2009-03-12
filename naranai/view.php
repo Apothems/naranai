@@ -1,5 +1,10 @@
 <?php
-	
+	require_once('hibbity/config.php');
+	if(!is_int($_GET["picture_id"]))
+	{
+		header("Location: " . $base_url);	
+		exit();
+	}
 	require_once('hibbity/dbinfo.php');
 	
 	
