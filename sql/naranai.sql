@@ -39,7 +39,7 @@ CREATE TABLE IF NOT EXISTS `comments` (
   KEY `image_id` (`image_id`),
   KEY `owner_ip` (`owner_ip`),
   KEY `posted` (`posted`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=448 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -64,7 +64,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
   `group_name` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `group_name` (`group_name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=7 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -93,7 +93,7 @@ CREATE TABLE IF NOT EXISTS `images` (
   KEY `images__width` (`width`),
   KEY `images__height` (`height`),
   KEY `images__numeric_score` (`numeric_score`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6512 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -138,7 +138,7 @@ CREATE TABLE IF NOT EXISTS `notes` (
   `width` int(11) NOT NULL,
   `user_id` int(11) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=38 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -182,7 +182,7 @@ CREATE TABLE IF NOT EXISTS `tags` (
   `type` enum('normal','character','artist','series') NOT NULL default 'normal',
   PRIMARY KEY  (`id`),
   UNIQUE KEY `tags__tag` (`tag`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=475 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -198,7 +198,7 @@ CREATE TABLE IF NOT EXISTS `tag_histories` (
   `date_set` datetime NOT NULL,
   `user_ip` char(15) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=557 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -210,7 +210,7 @@ CREATE TABLE IF NOT EXISTS `tag_types` (
   `id` int(11) NOT NULL auto_increment,
   `type` varchar(255) NOT NULL,
   PRIMARY KEY  (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=5 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -227,4 +227,4 @@ CREATE TABLE IF NOT EXISTS `users` (
   `email` varchar(249) default NULL,
   PRIMARY KEY  (`id`),
   UNIQUE KEY `users__name` (`name`)
-) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
