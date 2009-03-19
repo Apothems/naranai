@@ -1,6 +1,4 @@
 <?php
-	require_once("lib/functions.php");
-	
 	$post_menu =	array
 					(
 						'List' 	 		=> '/post/list',
@@ -38,7 +36,8 @@
 							</form>
 						</div>
 					</div>';
-					
+
+	$post_active = $tags_active = $account_active = $groups_active = $post = '';
 	switch($page_type)
 	{
 		case "post":
@@ -65,26 +64,22 @@
 
 	if($page_title == "")
 	{
-		$page_title = $site_name;	
+		$page_title = SITE_NAME;	
 	}
 
 include_once('tag_search.php');
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title><?php echo $page_title; ?></title>
 
-<script src="/lib/mootools.js" type="text/javascript"></script>
-<script src="/lib/mootoolsmore.js" type="text/javascript"></script>
-<script type="text/javascript" src="/lib/observer.js"></script>
-<script type="text/javascript" src="/lib/autocompleter.js"></script>
-<script type="text/javascript" src="/lib/autocompleter.local.js"></script>
-<script type="text/javascript">
+// Load the JS
+if( !isset($head['js']['load']) ) $head['js']['load'] = array();
+array_unshift($head['js']['load'], '/lib/mootools.js',
+								   '/lib/mootoolsmore.js',
+								   '/lib/observer.js',
+								   '/lib/autocompleter.js',
+								   '/lib/autocompleter.local.js');
 
+$head['js']['out'] =  "
 	window.addEvent('domready', function() {
-			tags = <?php echo $tag_search ?>;
+			tags = " . $tag_search . ";
 			new Autocompleter.Local('searchbox', tags, {
 												'minLength': 1, // We need at least 1 character
 												'selectMode': 'type-ahead', // Instant completion
@@ -93,21 +88,67 @@ include_once('tag_search.php');
 											});	
 			
 			 
-	});
-						
-</script>
+	});" . (isset($head['js']['out']) ? $head['js']['out'] : '' );
 
-<style type="text/css">
-	@import url('/styles/style.css');
-	@import url('/styles/autocompleter.css');
-</style>
-<!--[if lt IE 8]><style type="text/css">
+// Load the CSS
+if( !isset($head['css']['load']) ) $head['css']['load'] = array();
+array_unshift($head['css']['load'], '/styles/style.css', '/styles/autocompleter.css');
+$head['css']['out']    =  '
+<!--[if lt IE 8]>
 .list_image {
     display: inline;
 }
-</style><![endif]-->
+<![endif]-->' . (isset($head['css']['out']) ? $head['css']['out'] : '' );
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title><?php echo $page_title; ?></title>
+<?php
+if( isset($head) ) {
+	$tab  = "\n";
+	$tab2 = $tab . '	';
+	foreach($head as $types => $data) {
+		switch($types) {
+			case 'js':
+				if( isset($data['load']) ) {
+					echo $tab . '<script src="' , BASE_URL , implode('" type="text/javascript"></script>' . $tab . '<script src="' . BASE_URL, $data['load']) , '" type="text/javascript"></script>';
+				}
 
-<?php echo $head; ?>
+				if( isset($data['var']) ) {
+					echo $tab , '<script type="text/javascript">';
+					foreach($data['var'] as $var => $value) {
+						echo $tab2 , 'var ' , $var , ' = ' , is_numeric($value) ? $value : "'" . $value . "'" , ';';
+					}
+					echo $tab , '</script>';
+				}
+
+				if( isset($data['out']) ) {
+					echo $tab , '<script type="text/javascript">';
+					echo $data['out'];
+					echo $tab , '</script>';
+				}
+				break;
+			case 'css':
+				if( isset($data['load']) ) {
+					echo $tab, '<style type="text/css">';
+					echo $tab2, "@import url('", BASE_URL , implode("');" . $tab2 . "@import url('" . BASE_URL, $data['load']) , "');";
+					echo $tab, '</style>';
+				}
+
+				if( isset($data['out']) ) {
+					echo $tab , '<style type="text/css">';
+					echo $data['out'];
+					echo $tab , '</style>';
+				}
+				break;
+		}
+	}
+}
+
+$head = null;
+?>
 
 </head>
 
@@ -116,27 +157,27 @@ include_once('tag_search.php');
 <div id="header">
 	
     <div id="site_name">
-    	<?php echo $site_name; ?>
+    	<?php echo SITE_NAME; ?>
     </div>
 
     <div id="main_menu">
     	<span<?php echo $post_active; ?>>
-        	<a href="/post/list">
+        	<a href="<?php echo BASE_URL; ?>/post/list">
             	Posts
 			</a>
         </span>
         <span<?php echo $tags_active; ?>>
-        	<a href="/tags/list">
+        	<a href="<?php echo BASE_URL; ?>/tags/list">
             	Tags
 			</a>
         </span>
         <span<?php echo $groups_active; ?>>
-        	<a href="/group/list">
+        	<a href="<?php echo BASE_URL; ?>/group/list">
             	Groups
 			</a>
         </span>
         <span<?php echo $account_active; ?>>
-        	<a href="#/account">
+        	<a href="<?php echo BASE_URL; ?>#/account">
             	Account
 			</a>
         </span>
@@ -148,8 +189,8 @@ include_once('tag_search.php');
 			foreach($menu as $name => $link)
 			{
 				echo '	<span>
-				        	<a href="' . $link . '">
-            					' . $name . '
+				        	<a href="', BASE_URL, $link , '">
+            					' , $name , '
 							</a>
 				        </span>';	
 			}
@@ -168,7 +209,7 @@ include_once('tag_search.php');
                 </span>
             </span>
 			<span>
-                <a href="/logout">
+                <a href="<?php echo BASE_URL; ?>/logout">
                     Logout
                 </a>
             </span>
@@ -178,12 +219,12 @@ include_once('tag_search.php');
 			{
 			?>
             <span id="login">
-                <a href="/login">
+                <a href="<?php echo BASE_URL; ?>/login">
                     Login
                 </a>
             </span>
             <span id="register">
-                <a href="/register">
+                <a href="<?php echo BASE_URL; ?>/register">
                     Register
                 </a>
             </span>
