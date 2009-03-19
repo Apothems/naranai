@@ -33,22 +33,25 @@
 	$h          = mysql_query($sql);
 	$note_count = mysql_num_rows($h) ? mysql_result($h, 0) : 0;
 
-	$head 		= ' <script src="' . BASE_URL . '/lib/textboxlist.js" type="text/javascript"></script>
-					<script src="' . BASE_URL . '/lib/facebooklist.js" type="text/javascript"></script>
-					<script src="' . BASE_URL . '/lib/formcheck.js" type="text/javascript"></script>
-					<script src="' . BASE_URL . '/lib/moocombo.js" type="text/javascript"></script>
-					<script type="text/javascript">
-						var orig_width =  ' . $run['width'] . ';
-						var note_id = ' . $note_count . ' ;
-						var base_url = \'' . BASE_URL . '\';
-					</script>
-					<script src="' . BASE_URL . '/lib/view.js" type="text/javascript"></script>
-					<style type="text/css">
-						@import url(\'' . BASE_URL . '/styles/facelist.css\');
-						@import url(\'' . BASE_URL . '/styles/comments.css\');
-						@import url(\'' . BASE_URL . '/styles/formcheck.css\');
-					</style>
-					';
+	$head       = array(
+		'js'  => array(
+			'load' => array('/lib/textboxlist.js',
+					        '/lib/facebooklist.js',
+					        '/lib/formcheck.js',
+					        '/lib/moocombo.js',
+					        '/lib/view.js'),
+			'var'  => array('orig_width' => $run['width'],
+					        'note_id'    => $note_count,
+					        'base_url'   => BASE_URL)
+		),
+
+		'css' => array(
+			'load' => array('/styles/facelist.css',
+			                '/styles/comments.css',
+							'/styles/formcheck.css'
+			)
+		)
+	);
 	
 	$page_title = "Post " . $run['id'] . " - " . SITE_NAME;
 	

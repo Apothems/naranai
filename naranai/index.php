@@ -6,6 +6,7 @@
 	$page_type  = "post";
 	$pics       = 20;
 	$title      = "all posts";
+	$head       = array();
 	$search_tag = "";
 	$counts     = array();
 	$tags       = array();

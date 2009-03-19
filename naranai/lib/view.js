@@ -193,12 +193,11 @@ function scale(img, up)
 	 }
  }
 
- $$('.image_note').each(function (e){
- 	e.show();								 
- });
-
  if(up == 1)
  {
+	 $$('.image_note').each(function (e){
+		e.show();								 
+	 });
 	 holder.style.width = orig_width + 'px';
 	 img.style.width = orig_width + 'px';
 	 $('alert').style.display = "none";
