@@ -1,56 +1,63 @@
 <?php
-	require_once('hibbity/config.php');
-	if(!is_int($_GET["picture_id"]))
+	require_once('hibbity/dbinfo.php');
+	require_once(SITE_DIR . '/lib/functions.php');
+
+	if( !is_numeric($_GET["picture_id"]) )
 	{
-		header("Location: " . $base_url);	
+		header("Location: " . BASE_URL);	
 		exit();
 	}
-	require_once('hibbity/dbinfo.php');
-	
-	
-	$page_type 	= "post";
-	
-	$sql = "SELECT id FROM notes ORDER BY id DESC LIMIT 1";
+
+	$page_type     = "post";
+	$pic           = (int) $_GET["picture_id"];
+	$unrated       = '';
+	$explicit      = '';
+	$questionable  = '';
+	$safe          = '';
+	$unrated       = '';
+	$rating        = '';
+	$counts_proper = array();
+
+	$sql = "SELECT i.id, i.filename, i.source, i.height, i.width, i.hash, i.ext, i.posted, i.numeric_score, i.rating, group_concat(t.tag separator ' ') AS tags, group_concat(t.count separator ' ') AS counts, group_concat(t.type separator ' ') AS types FROM `images` i LEFT OUTER JOIN `image_tags` s ON  i.id = s.image_id LEFT OUTER JOIN `tags` t ON s.tag_id = t.id WHERE i.id = " . $pic . " GROUP BY i.id";
 	$get = mysql_query($sql);
-	
+
+	if( !mysql_num_rows($get) )
+	{
+		header("Location: " . BASE_URL);	
+		exit();
+	}
+
 	$run = mysql_fetch_assoc($get);
-	$note_count = $run['id'] + 0;
-	//mysql_free_result($run);
-	
-	$pic = $_GET["picture_id"];
-	$sql = "SELECT i.id, i.filename, i.source, i.height, i.width, i.hash, i.ext, i.posted, i.numeric_score, i.rating, group_concat(t.tag separator ',') AS tags, group_concat(t.count separator ',') AS counts, group_concat(t.type separator ',') AS types FROM `images` i LEFT OUTER JOIN `image_tags` s ON  i.id = s.image_id LEFT OUTER JOIN `tags` t ON s.tag_id = t.id WHERE i.id = " . $pic . " GROUP BY i.id";
-	$get = mysql_query($sql);
-	
-	$run = mysql_fetch_assoc($get);
-	
-	$head 		= ' <script src="/lib/textboxlist.js" type="text/javascript"></script>
-					<script src="/lib/facebooklist.js" type="text/javascript"></script>
-					<script src="/lib/formcheck.js" type="text/javascript"></script>
-					<script src="/lib/moocombo.js" type="text/javascript"></script>
+
+	$sql        = "SELECT CAST(id as UNSIGNED) FROM notes WHERE image_id = " . $pic . " ORDER BY id DESC LIMIT 1";
+	$h          = mysql_query($sql);
+	$note_count = mysql_num_rows($h) ? mysql_result($h, 0) : 0;
+
+	$head 		= ' <script src="' . BASE_URL . '/lib/textboxlist.js" type="text/javascript"></script>
+					<script src="' . BASE_URL . '/lib/facebooklist.js" type="text/javascript"></script>
+					<script src="' . BASE_URL . '/lib/formcheck.js" type="text/javascript"></script>
+					<script src="' . BASE_URL . '/lib/moocombo.js" type="text/javascript"></script>
 					<script type="text/javascript">
 						var orig_width =  ' . $run['width'] . ';
 						var note_id = ' . $note_count . ' ;
+						var base_url = \'' . BASE_URL . '\';
 					</script>
-					<script src="/lib/view.js" type="text/javascript"></script>
+					<script src="' . BASE_URL . '/lib/view.js" type="text/javascript"></script>
 					<style type="text/css">
-						@import url(\'/styles/facelist.css\');
-						@import url(\'/styles/comments.css\');
-						@import url(\'/styles/formcheck.css\');
+						@import url(\'' . BASE_URL . '/styles/facelist.css\');
+						@import url(\'' . BASE_URL . '/styles/comments.css\');
+						@import url(\'' . BASE_URL . '/styles/formcheck.css\');
 					</style>
 					';
 	
-	$page_title = "Post " . $run['id'] . " - " . $site_name;
+	$page_title = "Post " . $run['id'] . " - " . SITE_NAME;
 	
-	$source = "None";
-	if($run['source'] != "")
-	{
-		$source = '<a href="' . $run['source'] . '">' . $run['source'] . '</a>';
-	}
+	$source = empty($run['source']) ? "None" : '<a href="' . $run['source'] . '">' . $run['source'] . '</a>';
 	
-	$form_tags = str_replace(",", " ", $run['tags']);
-	$tags = explode(",", $run['tags']);
-	$counts = explode(",", $run['counts']);
-	$types = explode(",", $run['types']);
+	$form_tags = $run['tags'];
+	$tags      = explode(" ", $run['tags']);
+	$counts    = explode(" ", $run['counts']);
+	$types     = explode(" ", $run['types']);
 	
 	$sql_user = "SELECT u.name FROM `images` i LEFT OUTER JOIN `users` u ON i.owner_id = u.id WHERE i.id = " . $pic;
 	$get_user = mysql_query($sql_user);
@@ -60,27 +67,25 @@
 	$get_group = mysql_query($sql_group);
 	$run_group = mysql_fetch_assoc($get_group);
 	
-	if(mysql_num_rows($get_group) > 0)
+	if( mysql_num_rows($get_group) > 0 )
 	{
 		$group_id 	= $run_group['id'];
-		$group		= '<a href="/group/view/' . $run_group['id'] . '">' . $run_group['group_name'] . '</a>';
+		$group		= '<a href="' . BASE_URL . '/group/view/' . $run_group['id'] . '">' . $run_group['group_name'] . '</a>';
 	}
 	else
 	{
 		$group = "None";	
 	}
 	
-	for($i = 0; $i < count($counts); $i++)
-	{
-		$counts_proper[] .=	$counts[$i] . ':' . $types[$i];
-	}
+	$size = sizeof($counts);
+	for($i = 0; $i < $size; ++$i) $counts_proper[] = array($counts[$i], $types[$i]);
+
 	$counts = "";
 	
 	$tags = array_combine($tags, $counts_proper);
 	arsort($tags, SORT_NUMERIC);
 	array_slice($tags, 0, 15);
-	
-	
+
 	switch($run['rating'])
 	{
 		case 0:
@@ -122,9 +127,9 @@
             	File Info
             </div>
             <div class="block_content">
-            	<strong>Resolution:</strong> <?php echo $run['width'] . 'x' . $run['height'] ?><br />
+            	<strong>Resolution:</strong> <?php echo $run['width'] , 'x' , $run['height']; ?><br />
                 <strong>Rating:</strong> <?php echo $rating; ?><br />
-                <strong>Score:</strong> <?php echo $run['numeric_score'] ?>
+                <strong>Score:</strong> <?php echo $run['numeric_score']; ?>
             </div>
         </div>
         
@@ -136,8 +141,7 @@
             	<?php
 					foreach($tags as $tag => $count)
 					{
-						$count = explode(":", $count);
-						echo '<a href="/post/list/' . $tag . '" class="' . $count[1] . '">' . $tag . '</a> ' . $count[0] . '<br />';
+						echo '<a href="' , BASE_URL , '/post/list/' , $tag , '" class="' , $count[1] , '">' , $tag , '</a> ' , $count[0] , '<br />';
 					}
 				?>
             </div>
@@ -149,11 +153,11 @@
             </div>
             <div class="block_content">
             	<?php
-					$sql_block = "SELECT tag, count, type FROM tags ORDER BY count DESC LIMIT 15";
+					$sql_block = "SELECT tag, count, type FROM tags WHERE count > 0 ORDER BY count DESC LIMIT 15";
 					$get_block = mysql_query($sql_block);
 					while($run_block = mysql_fetch_assoc($get_block))
 					{
-						echo '<a href="/post/list/' . $run_block['tag'] . '" class="' . $run_block['type'] . '">' . $run_block['tag'] . '</a> ' . $run_block['count'] . '<br />';
+						echo '<a href="' , BASE_URL , '/post/list/' , $run_block['tag'] , '" class="' , $run_block['type'] , '">' , $run_block['tag'] , '</a> ' , $run_block['count'] , '<br />';
 					}
 				?>
             </div>
@@ -168,7 +172,7 @@
             	<?php
 					if($_COOKIE["user_name"] == "randall")
 					{
-						echo '<a href="/admin/delete/' . $pic . '">Remove Image</a><br />';
+						echo '<a href="', BASE_URL , '/admin/delete/' , $pic , '">Remove Image</a><br />';
 						
 					}
 				?>
@@ -187,12 +191,12 @@
         <div class="spacer"></div>
         
         <div id="note-holder" style="display:none;">
-        	<textarea id="note_text"></textarea><br />
+			<textarea rows="7" id="note_text" style="margin: 2px 2px 12px; width: 350px;"></textarea><br />
             <input type="button" value="Save" id="note_save" /><input type="button" value="Cancel" id="note_cancel" />
             <input type="hidden" id="note_id" value="new" />
             <input type="hidden" id="note_new" value="true" />
             <input type="hidden" id="note_image_id" value="<?php echo $pic; ?>" />
-            <input type="hidden" id="note_user_id" value="<?php echo $_COOKIE['user_id'] + 0; ?>" />
+            <input type="hidden" id="note_user_id" value="<?php echo isset($_COOKIE['user_id']) ? (int) $_COOKIE['user_id'] : 0; ?>" />
         </div>
         
         <div id="image_holder">
@@ -203,17 +207,17 @@
 				$pic_note_count = mysql_num_rows($get_notes);
 				while($run_notes = mysql_fetch_assoc($get_notes))
 				{
-					echo '<div id="note_' . $run_notes['id'] . '" class="image_note" style="position: absolute; left: ' . $run_notes['x'] . 'px; top: ' . $run_notes['y'] . 'px; width: ' . $run_notes['width'] . 'px; height: ' . $run_notes['height'] . 'px;cursor: default;" onmouseover="this.getElement(\'.tip\').show();" onmouseout="this.getElement(\'.tip\').hide();">
-						<div id="drag_' . $run_notes['id'] . '" class="drag">
+					echo '<div id="note_' , $run_notes['id'] , '" class="image_note" style="position: absolute; left: ' , $run_notes['x'] , 'px; top: ' , $run_notes['y'] , 'px; width: ' , $run_notes['width'] , 'px; height: ' . $run_notes['height'] . 'px;cursor: default;" onmouseover="this.getElement(\'.tip\').show();" onmouseout="this.getElement(\'.tip\').hide();">
+						<div id="drag_' , $run_notes['id'] , '" class="drag">
 							
 						</div>
 						<div class="tip_space"></div>
-						<div id="tip_' . $run_notes['id'] . '" class="tip" style="display: none;cursor: default;">
-							' . nl2br(stripslashes($run_notes['note'])) . '
+						<div id="tip_' , $run_notes['id'] , '" class="tip" style="display: none;cursor: default;">
+							' , nl2br(stripslashes($run_notes['note'])) , '
 						</div>
 					</div>';
 				}
-				echo '<img id="main_image" src="' . $base_url . '/images/' . $run['hash'] . '.' . $run['ext'] . '" alt="" />';
+				echo '<img id="main_image" src="' , BASE_URL , '/images/' , $run['hash'] , '.' , $run['ext'] , '" alt="" />';
 				
 			?>
 
@@ -251,7 +255,7 @@
         </div>
             
 		<div id="edit">
-        	<form id="tagform" action="/save" method="post">
+        	<form id="tagform" action="<?php echo BASE_URL; ?>/save" method="post">
             
         	<div>
                 <span class="edit_title">
@@ -285,7 +289,7 @@
 								{
 						?>
                         	
-								<option value="<?php echo $run_group["group_name"]; ?>"<?php echo $select ?>><?php echo $run_group["group_name"]; ?></option>
+								<option value="<?php echo $run_group["group_name"]; ?>"<?php echo $select; ?>><?php echo $run_group["group_name"]; ?></option>
                             
                         <?php
 								}
@@ -341,7 +345,7 @@
 									$form_tag_loop = explode(" ", $form_tags);
 									foreach($form_tag_loop as $form_tag)
 									{
-										echo "<li>" . $form_tag . "</li>";	
+										echo "<li>" , $form_tag , "</li>";	
 									}
 								}
 								echo "</ul>";
@@ -404,7 +408,7 @@
         
         <div id="response">
         	
-           <form id="comment_form" action="/comment" method="post">
+           <form id="comment_form" action="<?php echo BASE_URL; ?>/comment" method="post">
     
            		<div>
     	            <span class="edit_title">
@@ -421,7 +425,7 @@
         	        </span>
             	    <span class="edit_form">
                 		<input type="hidden" name="picture_id" value="<?php echo $pic; ?>" />
-                    	<input type="hidden" name="user_id" value="<?php echo $_COOKIE["user_id"]; ?>" />
+                    	<input type="hidden" name="user_id" value="<?php echo isset($_COOKIE["user_id"]) ? (int) $_COOKIE["user_id"] : 0; ?>" />
 	                    <input type="submit" name="submit" value="Post Comment" />
     	            </span>
         	    </div>
@@ -442,14 +446,6 @@ if(img)
  img.onclick = function() {scale(img);};
  scale(img);
 }
-
-<?php
-	if($pic_note_count > 0)
-	{
-			echo "scale($('main_image'), 1);";
-	}
-?>
-
 </script>
 <?php
 	require_once("footer.php");

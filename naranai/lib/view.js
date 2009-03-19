@@ -25,13 +25,13 @@ window.addEvent('domready', function(){
 		var tlist2 = new FacebookList('img_tags', 'taglist');
 							  
 		// fetch and feed
-		new Request.JSON({'url': '/tag_list.php', 'onComplete': function(j) {
+		new Request.JSON({'url': base_url + '/tag_list.php', 'onComplete': function(j) {
 			j.each(tlist2.autoFeed, tlist2);
 		}}).send();
 						
 		$('tagform').addEvent('submit', function(){
 			tlist2.update();
-			this.action = "/save";
+			this.action = base_url + "/save";
 		});
 		$('add_note').addEvent('click', function(e) {
 			
@@ -89,7 +89,8 @@ window.addEvent('domready', function(){
 			var tip = new Element('div', {
 				'id': 'new_tip_' + note_id,
 				'title': 'Click to edit.',
-				'class': 'tip'				
+				'class': 'tip',
+				'style': 'width: 175px; height: 125px;'
 			});
 			
 			tip.inject(main);
@@ -140,7 +141,7 @@ window.addEvent('domready', function(){
 			text = $('note_text').value;
 			image_id = $('note_image_id').value;
 			var saver = new Request.HTML({
-				url: '/note/save',
+				url: base_url + '/note/save',
 				method: 'post',
 				update: tip
 			});
@@ -151,6 +152,8 @@ window.addEvent('domready', function(){
 			main.removeEvents();
 			thing.removeEvents();
 			tip.setStyle('cursor', 'default');
+			tip.setStyle('height', 'auto');
+			tip.setStyle('width', 'auto');
 			main.setStyle('cursor', 'default');
 			main.addEvent('mouseover', function(e) {
 				tip.show();		   
@@ -189,7 +192,11 @@ function scale(img, up)
 		});
 	 }
  }
- 
+
+ $$('.image_note').each(function (e){
+ 	e.show();								 
+ });
+
  if(up == 1)
  {
 	 holder.style.width = orig_width + 'px';

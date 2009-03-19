@@ -1,5 +1,6 @@
 <?php
 	require_once('hibbity/dbinfo.php');
+	require_once(SITE_DIR . '/lib/functions.php');
 
 	# All the predefined shit goes here.
 	$page_type  = "post";
@@ -62,8 +63,8 @@
 		$tags = array_slice($tags, 0, 15);
 	}
 
-	require_once("header.php");
 	$pages = ceil(mysql_found_rows() / $pics);
+	require_once("header.php");
 ?>
 
 
