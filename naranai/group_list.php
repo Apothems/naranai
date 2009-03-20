@@ -15,7 +15,7 @@
 	$sql = "SELECT DISTINCT id FROM `groups` WHERE group_name != '' GROUP BY id ORDER BY id DESC";
 	$get = mysql_query($sql);
 	
-	$page_title = "Viewing Group List - " . $site_name;
+	$page_title = "Viewing Group List - " . SITE_NAME;
 	
 	$total = mysql_num_rows($get);
 	$pages = ceil($total / $pics);
@@ -78,7 +78,7 @@
 								<span class="small">' . $run['group_name'] . '
 								<span class="light">(' . $count . ' images)</span></span><br />
 								<a href="/group/view/' . $run['id'] . '">
-									<img src="' . $base_url . '/thumbs/' . $run_pop['hash'] . '.jpg" alt="" title="" />
+									<img src="' . BASE_URL . '/thumbs/' . $run_pop['hash'] . '.jpg" alt="" title="" />
 								</a>
 							</span>';
 				}

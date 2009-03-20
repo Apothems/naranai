@@ -4,7 +4,7 @@
 	
 	if($_COOKIE["user_id"])
 	{
-		header("Location: " . $base_url . "/post/list");
+		header("Location: " . BASE_URL . "/post/list");
 		exit();
 	}
 	
@@ -25,7 +25,7 @@
 	}
 	
 	$page_type = "post";
-	$head 		= ' <script src="/lib/formcheck.js" type="text/javascript"></script>
+	$head 		= ' <script src="' . BASE_URL . '/lib/formcheck.js" type="text/javascript"></script>
 					<script type="text/javascript">
 
 						window.addEvent(\'domready\', function(){
@@ -34,10 +34,10 @@
 
 					</script>
 					<style type="text/css">
-						@import url(\'/styles/formcheck.css\');
+						@import url(\'' . BASE_URL . '/styles/formcheck.css\');
 					</style>
 					';
-	$page_title = "Registration - " . $site_name;
+	$page_title = "Registration - " . SITE_NAME;
 	
 	require_once("header.php");
 	
@@ -64,7 +64,7 @@
 	    </div>
         <div class="spacer"></div>
         
-        <form class="registration" id="registration_form" method="post" action="/registration">
+        <form class="registration" id="registration_form" method="post" action="<?php echo BASE_URL; ?>/registration">
             <fieldset>
                 <legend>User Information</legend>
                 <label>

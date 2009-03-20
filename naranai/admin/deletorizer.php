@@ -2,7 +2,7 @@
 	require_once('../lib/functions.php');
 	if(!isadmin($_COOKIE['user_id']))
 	{
-		header("Location: " . $base_url);	
+		header("Location: " . BASE_URL);	
 		exit();
 	}
 	
@@ -24,5 +24,5 @@
 	$sql = "DELETE FROM images WHERE id = " . $id . " LIMIT 1";
 	mysql_query($sql);
 	
-	header("Location: " . $base_url);
+	header("Location: " . BASE_URL);
 ?>

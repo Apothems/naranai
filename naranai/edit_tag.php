@@ -10,7 +10,7 @@
 					</style>
 					";
 	$thing = "Add Tag";
-	$page_title = "Add Tag - " . $site_name;
+	$page_title = "Add Tag - " . SITE_NAME;
 	if(isset($_GET["tag"]))
 	{
 		$sql = "SELECT tag, type FROM `tags` WHERE `id` = " . $_GET["tag"];
@@ -32,7 +32,7 @@
 				$series = ' selected="selected"';
 				break;
 		}
-		$page_title = "Edit Tag: " . $run["tag"] . " - " . $site_name;
+		$page_title = "Edit Tag: " . $run["tag"] . " - " . SITE_NAME;
 	}
 	
 	

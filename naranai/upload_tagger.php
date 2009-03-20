@@ -4,13 +4,13 @@
 	
 	
 	$page_type = "post";
-	$head 		= ' <script src="/lib/textboxlist.js" type="text/javascript"></script>
-					<script src="/lib/facebooklist.js" type="text/javascript"></script>
-					<script src="/lib/formcheck.js" type="text/javascript"></script>
+	$head 		= ' <script src="' . BASE_URL . '/lib/textboxlist.js" type="text/javascript"></script>
+					<script src="' . BASE_URL . '/lib/facebooklist.js" type="text/javascript"></script>
+					<script src="' . BASE_URL . '/lib/formcheck.js" type="text/javascript"></script>
 					<style type="text/css">
-						@import url(\'/styles/facelist.css\');
-						@import url(\'/styles/comments.css\');
-						@import url(\'/styles/formcheck.css\');
+						@import url(\'' . BASE_URL . '/styles/facelist.css\');
+						@import url(\'' . BASE_URL . '/styles/comments.css\');
+						@import url(\'' . BASE_URL . '/styles/formcheck.css\');
 					</style>
 					<script type="text/javascript">
 						window.addEvent(\'domready\', function(){
@@ -24,7 +24,7 @@
 									e.send();
 									if(e == elements.getLast())
 									{
-										$(\'main_area\').innerHTML = \'<h1>Thanks for tagging your shit.</h1><br /><a href="/post/list" style=\"font-size:20px;font-weight:bold;">Post List &raquo;</a>\'
+										$(\'main_area\').innerHTML = \'<h1>Thanks for tagging your shit.</h1><br /><a href="' . BASE_URL . '/post/list" style=\"font-size:20px;font-weight:bold;">Post List &raquo;</a>\'
 									}
 								});
 							});
@@ -59,7 +59,7 @@
 					</style>
 					';
 	
-	$page_title = "Tag your images - " . $site_name;
+	$page_title = "Tag your images - " . SITE_NAME;
 	
 	if(isset($_COOKIE['user_id']))
 	{
@@ -70,7 +70,7 @@
 		$where = "`owner_ip` = '" . $_SERVER['REMOTE_ADDR'] . "'";	
 	}
 	
-	$sql = "SELECT id FROM `images` WHERE " . $where . " AND (SELECT id FROM `image_tags` WHERE `image_id` = id GROUP BY `image_id`) IS NULL AND `posted` >= DATE_SUB(NOW(),INTERVAL 5 MINUTE) ORDER BY id DESC LIMIT 10";
+	$sql = "SELECT id, hash FROM `images` WHERE " . $where . " AND (SELECT id FROM `image_tags` WHERE `image_id` = id GROUP BY `image_id`) IS NULL AND `posted` >= DATE_SUB(NOW(),INTERVAL 5 MINUTE) ORDER BY id DESC LIMIT 10";
 	$get = mysql_query($sql);
 	
 
@@ -105,11 +105,11 @@
 				{	
 					?>
 					<span class="list_image">
-								<a href="/post/view/<?php echo $id['id']; ?>">
-									<img src="' . $base_url . '/thumb/<?php echo $id['id']; ?>.jpg" alt="" title="" />
+								<a href="<?php echo BASE_URL; ?>/post/view/<?php echo $id['id']; ?>">
+									<img src="<?php echo BASE_URL; ?>/thumbs/<?php echo $id['hash']; ?>.jpg" alt="" title="" />
 								</a>
                                 <div class="edit">
-                                    <form id="form_<?php echo $id['id']; ?>" action="/save" method="post">
+                                    <form id="form_<?php echo $id['id']; ?>" action="<?php echo BASE_URL; ?>/save" method="post">
                                     
                                     <div>
                                         

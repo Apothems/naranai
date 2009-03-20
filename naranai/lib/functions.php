@@ -1,7 +1,4 @@
 <?php
-
-require_once('../hibbity/dbinfo.php');
-
 function fuzzy_time( $time ) {
 
   if ( ( $time = strtotime( $time ) ) == false ) {
@@ -89,23 +86,19 @@ function fuzzy_time( $time ) {
   return 'more than ten years ago';
 }
 
-function isadmin($userid)
+function isadmin()
 {
-	if(!isset($userid))
-	{
-		return false;
-	}
-	$sql = "SELECT admin  FROM `users` WHERE `id` = " . $userid;
-	$get = mysql_query($sql);
-	$run = mysql_fetch_assoc($get);
-	if($run['admin'] = 'Y')
-	{
-		return true;
-	}
+	if( defined('ISADMIN') ) return ISADMIN;
+	if( isset($_COOKIE['user_id']) )
+		$id = abs($_COOKIE['user_id']);
 	else
-	{
 		return false;
-	}
+	$sql = "SELECT admin  FROM `users` WHERE `id` = " . $id;
+	define('ISADMIN', mysql_result(mysql_query($sql), 0) == 'Y' ? true : false);
+	return ISADMIN;
 }
 
+function mysql_found_rows() {
+	return mysql_result(mysql_query("SELECT FOUND_ROWS()"), 0);
+}
 ?>

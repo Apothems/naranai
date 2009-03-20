@@ -13,7 +13,7 @@ if(isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email
 		
 		if($run['users'] > 0)
 		{
-			header("Location: " . $base_url . "/register/err/422");
+			header("Location: " . BASE_URL . "/register/err/422");
 			exit();
 		}
 		
@@ -37,18 +37,18 @@ if(isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email
 								   );";
 			mysql_query($sql);
 			
-			header("Location: " . $base_url . "/login");
+			header("Location: " . BASE_URL . "/login");
 			exit();
 		}
 		else
 		{
-			header("Location: " . $base_url . "/register/err/412");
+			header("Location: " . BASE_URL . "/register/err/412");
 			exit();
 		}
 	}
 else
 {
-	header("Location: " . $base_url . "/register/err/415");
+	header("Location: " . BASE_URL . "/register/err/415");
 	exit();
 }
 

@@ -15,7 +15,7 @@
 	$id['tags'] = array();
 	$id['hash'] = array();
 	$search_tag = isset($_GET['q']) ? $_GET['q'] : '';
-	$pagenum    = isset($_GET["pagenum"]) ? abs($_GET['pagenum'] - 1) : 0;
+	$pagenum    = isset($_GET["pagenum"]) ? abs($_GET['pagenum']) : 0;
 	$limit      = $pics * $pagenum;
 
 	if( !empty($search_tag) )
@@ -31,7 +31,7 @@
 		$search_tags = array_map('mysql_real_escape_string', $search_tags);
 
 		# Imploding it all in one is 5x faster.
-		$search_tag = "HAVING LOCATE('" . implode("', tags) > 0 AND LOCATE('", $search_tags) . "', tags) > 0 ";
+		$search_tag = "HAVING LOCATE('" . implode("', tag) > 0 AND LOCATE('", $search_tags) . "', tag) > 0 ";
 	}
 
 	# Setup page title.
@@ -40,6 +40,7 @@
 	# INNER JOIN checks for a match while LEFT JOIN (AKA LEFT OUTER JOIN) doesn't really.
 	# Reference: http://www.w3schools.com/Sql/sql_join_left.asp
 	$sql = "SELECT SQL_CALC_FOUND_ROWS i.id, i.hash, group_concat(t.tag separator ' ') as tag, group_concat(t.count separator ' ') as count, group_concat(t.type separator ' ') as type FROM `images` i LEFT OUTER JOIN `image_tags` s ON i.id = s.image_id LEFT OUTER JOIN `tags` t ON s.tag_id = t.id GROUP BY i.id " . $search_tag . "ORDER BY i.id DESC LIMIT " . $limit . ", " . $pics;
+
 	$get = mysql_query($sql);
 	$sql = "";
 

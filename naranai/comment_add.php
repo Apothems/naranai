@@ -2,7 +2,7 @@
 	require_once('hibbity/config.php');
 	if (preg_match("/http/i", $_POST["comment"])) 
 	{
-    	header("Location: " . $base_url . "/post/list");
+    	header("Location: " . BASE_URL . "/post/list");
 		exit();
 	}
 	require_once('hibbity/dbinfo.php');
@@ -19,7 +19,7 @@
 	
 	if(!$id || !$comment)
 	{
-		header("Location: " . $base_url . "/post/list");
+		header("Location: " . BASE_URL . "/post/list");
 		exit();
 	}
 	
@@ -38,7 +38,7 @@
 								   '" . $comment . "'
 								   );";
 	mysql_query($sql);
-	header("Location: " . $base_url . "/post/view/" . $id);
+	header("Location: " . BASE_URL . "/post/view/" . $id);
 	exit();
 	
 ?>

@@ -58,9 +58,20 @@ if (isset($_FILES['photoupload']) )
 			$current_img_width = $size[0];
 			$current_img_height = $size[1];
 
-			$thumb_name = $site_dir . "/thumbs/" . $ab . "/" . $hash;
-			$image_name = $site_dir . "/images/" . $ab . "/" . $hash;
- 		    
+			$thumb_name = SITE_DIR . "/thumbs/" . $ab . "/";
+			$image_name = SITE_DIR . "/images/" . $ab . "/";
+			if ( !is_dir($thumb_name) ) {
+				$u = umask(0);
+				@mkdir($thumb_name, 0777);
+				umask($u);
+			}
+			$thumb_name .= $hash;
+			if ( !is_dir($image_name) ) {
+				$u = umask(0);
+				@mkdir($image_name, 0777);
+				umask($u);
+			}
+			$image_name .= $hash;
 			$too_big_diff_ratio = $current_img_width/$max_width;
 			$new_img_width = $max_width;
 			$new_img_height = round($current_img_height/$too_big_diff_ratio);
@@ -95,7 +106,7 @@ if (isset($_FILES['photoupload']) )
 			
 			imagecopyresampled($thumb, $source, 0, 0, 0, 0, $new_img_width, $new_img_height, $current_img_width, $current_img_height);
 			imagejpeg($thumb, $thumb_name, 90);
-			
+/*			
 			//$make_magick = system("convert -format jpeg -quality 85 -compress JPEG -thumbnail $new_img_width x $new_img_height $image_name $thumb_name", $retval);
 			// Did it work?
 			if (!($retval)) {
@@ -105,7 +116,7 @@ if (isset($_FILES['photoupload']) )
 				$result['result'] = 'error';
 				$result['error'] = 'Thumb creation failed.';
 			}
-
+*/
 			
 			
 			$sql = "INSERT INTO images(
@@ -155,9 +166,9 @@ else
 	$result['error'] = 'Missing file or internal error!';
 }
 
-if($_POST["fail"] == "true" && !headers_sent())
+if( isset($_POST["fail"]) && $_POST['fail'] == "true" && !headers_sent())
 {
-	header('Location: ' . $base_url . '/post/list');
+	header('Location: ' . BASE_URL . '/post/list');
 	exit();
 }
 

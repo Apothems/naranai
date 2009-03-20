@@ -1,6 +1,5 @@
-
 <IfModule mod_rewrite.c>
-RewriteEngine  on
+RewriteEngine  On
 
 # This just redirects the files so they're a bit simpler to find.
 # Also doesn't use a fucking script to load files. So browsers can cache and so on.

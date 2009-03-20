@@ -106,48 +106,36 @@ $head['css']['out']    =  '
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title><?php echo $page_title; ?></title>
 <?php
-if( isset($head) ) {
 	$tab  = "\n";
 	$tab2 = $tab . '	';
-	foreach($head as $types => $data) {
-		switch($types) {
-			case 'js':
-				if( isset($data['load']) ) {
-					echo $tab . '<script src="' , BASE_URL , implode('" type="text/javascript"></script>' . $tab . '<script src="' . BASE_URL, $data['load']) , '" type="text/javascript"></script>';
-				}
 
-				if( isset($data['var']) ) {
-					echo $tab , '<script type="text/javascript">';
-					foreach($data['var'] as $var => $value) {
-						echo $tab2 , 'var ' , $var , ' = ' , is_numeric($value) ? $value : "'" . $value . "'" , ';';
-					}
-					echo $tab , '</script>';
-				}
+	# Start with the JS
+	$data =& $head['js'];
+	echo $tab . '<script src="' , BASE_URL , implode('" type="text/javascript"></script>' . $tab . '<script src="' . BASE_URL, $data['load']) , '" type="text/javascript"></script>';
 
-				if( isset($data['out']) ) {
-					echo $tab , '<script type="text/javascript">';
-					echo $data['out'];
-					echo $tab , '</script>';
-				}
-				break;
-			case 'css':
-				if( isset($data['load']) ) {
-					echo $tab, '<style type="text/css">';
-					echo $tab2, "@import url('", BASE_URL , implode("');" . $tab2 . "@import url('" . BASE_URL, $data['load']) , "');";
-					echo $tab, '</style>';
-				}
-
-				if( isset($data['out']) ) {
-					echo $tab , '<style type="text/css">';
-					echo $data['out'];
-					echo $tab , '</style>';
-				}
-				break;
+	if( isset($data['var']) ) {
+		echo $tab , '<script type="text/javascript">';
+		foreach($data['var'] as $var => $value) {
+			echo $tab2 , 'var ' , $var , ' = ' , is_numeric($value) ? $value : "'" . $value . "'" , ';';
 		}
+		echo $tab , '</script>';
 	}
-}
 
-$head = null;
+	echo $tab , '<script type="text/javascript">';
+	echo $data['out'];
+	echo $tab , '</script>';
+
+	# Finally, do the CSS
+	$data =& $head['css'];
+	echo $tab, '<style type="text/css">';
+	echo $tab2, "@import url('", BASE_URL , implode("');" . $tab2 . "@import url('" . BASE_URL, $data['load']) , "');";
+	echo $tab, '</style>';
+
+	echo $tab , '<style type="text/css">';
+	echo $data['out'];
+	echo $tab , '</style>';
+
+	$head = null;
 ?>
 
 </head>

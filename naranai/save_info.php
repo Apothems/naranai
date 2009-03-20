@@ -6,7 +6,7 @@
 	
 	if(!$id)
 	{
-		header("Location: " . $base_url . "/post/list");
+		header("Location: " . BASE_URL . "/post/list");
 		exit();
 	}
 	
@@ -48,6 +48,7 @@
 	}
 	$tag_search = str_replace(" ", "', '", $tags);
 	$tags 		= explode(" ", $tags);
+	$tags       = array_filter($tags); # Remove all nonscalar values.
 	foreach($tags as $tag)
 	{
 		$sql = "INSERT IGNORE INTO `tags`(tag) VALUES('" . $tag . "')";
@@ -66,14 +67,18 @@
 		mysql_query($sql);
 	}
 
+
 	$old_tags 	= explode(" ", $old_tags);
+
+	$remove = array();
 	foreach($old_tags as $old_tag)
 	{
 		if(!in_array($old_tag, $tags))
 		{
-			$remove[] .= $old_tag;
+			$remove[] = $old_tag;
 		}	
 	}
+	$remove = array_filter($remove); # Remove all nonscalar values.
 	$old_tag_search = implode("', '", $remove);
 	
 	$sql = "SELECT id FROM `tags` WHERE `tag` IN ('" . $tag_search . "')";
@@ -105,6 +110,20 @@
 	$sql = "UPDATE `images` SET `source` = '" . $source . "', `rating` = " . $rating . " WHERE `id` = " . $id;
 	mysql_query($sql);
 
-	header("Location: " . $base_url . "/post/view/" . $id);
+	# Final check; make sure that if there are no tags add "tagme"!
+	$sql = "SELECT COUNT(`image_id`) FROM `image_tags` WHERE `image_id` = " . $id;
+	$total = mysql_result(mysql_query($sql), 0);
+	if( !$total )
+	{
+		$sql_tag = "INSERT IGNORE INTO `image_tags`(image_id, tag_id) VALUES('" . $id . "', '1')";
+		mysql_query($sql_tag);
+		if(mysql_affected_rows() > 0)
+		{
+			$sql_tag = "UPDATE `tags` SET `count` = `count` + 1 WHERE `id` = '1'";
+			mysql_query($sql_tag);
+		}
+	}
+	
+	header("Location: " . BASE_URL . "/post/view/" . $id);
 
 ?>

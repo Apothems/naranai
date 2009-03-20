@@ -2,14 +2,14 @@
 	require_once('hibbity/dbinfo.php');
 	require_once(SITE_DIR . '/lib/functions.php');
 
-	if( !is_numeric($_GET["picture_id"]) )
+	$pic = abs($_GET['picture_id']);
+	if( !$pic )
 	{
 		header("Location: " . BASE_URL);	
 		exit();
 	}
 
 	$page_type     = "post";
-	$pic           = (int) $_GET["picture_id"];
 	$unrated       = '';
 	$explicit      = '';
 	$questionable  = '';
@@ -173,10 +173,9 @@
             <div class="block_content">
             	<a id="add_note">Add Translation</a><br />
             	<?php
-					if($_COOKIE["user_name"] == "randall")
+					if( isadmin() )
 					{
 						echo '<a href="', BASE_URL , '/admin/delete/' , $pic , '">Remove Image</a><br />';
-						
 					}
 				?>
             </div>

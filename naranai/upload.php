@@ -3,7 +3,7 @@
 	require_once('hibbity/dbinfo.php');
 	
 	$sep = "?";
-	if(!$_COOKIE["user_id"])
+	if(!isset($_COOKIE["user_id"]))
 	{
 		$sql = "SELECT COUNT(*) as uploads FROM `images` WHERE `posted` >= DATE_SUB(CURDATE(),INTERVAL 1 DAY) AND `owner_ip` = '" . $_SERVER['REMOTE_ADDR'] . "'";
 		$get = mysql_query($sql);
@@ -13,10 +13,10 @@
 	
 	$page_type = "post";
 	$head 		= " <script src=\"/lib/formcheck.js\" type=\"text/javascript\"></script>
-					<script type=\"text/javascript\" src=\"/lib/Swiff.Uploader.js\"></script>
-					<script type=\"text/javascript\" src=\"/lib/Fx.ProgressBar.js\"></script>
-					<script type=\"text/javascript\" src=\"/lib/FancyUpload2.js\"></script>
-					<script type=\"text/javascript\" src=\"/lib/moocombo.js\"></script>
+					<script type=\"text/javascript\" src=\"" . BASE_URL . "/lib/Swiff.Uploader.js\"></script>
+					<script type=\"text/javascript\" src=\"" . BASE_URL . "/lib/Fx.ProgressBar.js\"></script>
+					<script type=\"text/javascript\" src=\"" . BASE_URL . "/lib/FancyUpload2.js\"></script>
+					<script type=\"text/javascript\" src=\"" . BASE_URL . "/lib/moocombo.js\"></script>
 					<script type=\"text/javascript\">
 
 						window.addEvent('domready', function() {
@@ -24,7 +24,7 @@
 							var swiffy = new FancyUpload2($('upload_status'), $('file_list'), {
 								url: $('upload_form').action,
 								fieldName: 'photoupload',
-								path: '/lib/Swiff.Uploader.swf',
+								path: '" . BASE_URL . "/lib/Swiff.Uploader.swf',
 								limitSize: 2 * 1024 * 1024,
 								limitFiles: 10,
 								onLoad: function() {
@@ -32,7 +32,7 @@
 									$('form_fallback').destroy();
 								},
 								onAllComplete: function() {
-									$('progress_holder').innerHTML = '<h1>All Uploads Complete.</h1><br /><a href=\"/post/upload/tag\" style=\"font-size:20px;font-weight:bold;\">Tag Uploads &raquo;</a>';
+									$('progress_holder').innerHTML = '<h1>All Uploads Complete.</h1><br /><a href=\"" . BASE_URL . "/post/upload/tag\" style=\"font-size:20px;font-weight:bold;\">Tag Uploads &raquo;</a>';
 								},
 								// The changed parts!
 								debug: true, // enable logs, uses console.log
@@ -65,11 +65,11 @@
 
 					</script>
 					<style type=\"text/css\">
-						@import url('/styles/formcheck.css');
-						@import url('/styles/upload.css');
+						@import url('" . BASE_URL . "/styles/formcheck.css');
+						@import url('" . BASE_URL . "/styles/upload.css');
 					</style>
 					";
-	$page_title = "Image Upload - " . $site_name;
+	$page_title = "Image Upload - " . SITE_NAME;
 	
 	require_once("header.php");
 	
@@ -100,7 +100,7 @@
 			if($run['uploads'] < 10)
 			{
 		?>
-	    <form class="registration" id="upload_form" action="/uploader/<?php echo $_COOKIE["user_id"] ?>" method="post">
+	    <form class="registration" id="upload_form" action="<?php echo BASE_URL; ?>/uploader/<?php echo $_COOKIE["user_id"] ?>" method="post">
 	    
         <h4>Posting Guidelines</h4>
         
@@ -151,11 +151,11 @@
                 <div>
         
                     <strong class="overall-title">Overall progress</strong><br />
-                    <img src="/lib/assets/progress-bar/bar.gif" class="progress overall-progress" />
+                    <img src="<?php echo BASE_URL; ?>/lib/assets/progress-bar/bar.gif" class="progress overall-progress" />
                 </div>
                 <div>
                     <strong class="current-title">File Progress</strong><br />
-                    <img src="/lib/assets/progress-bar/bar.gif" class="progress current-progress" />
+                    <img src="<?php echo BASE_URL; ?>/lib/assets/progress-bar/bar.gif" class="progress current-progress" />
                 </div>
                 <div>
                 <strong class="overall-title">Add Uploads to the Following Group</strong><br />

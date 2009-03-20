@@ -47,10 +47,9 @@
 	$get = mysql_query($sql);
 	$run = mysql_fetch_assoc($get);
 	$title = $run["group_name"];
-	$page_title = "Viewing Group: " . $title . " - " . $site_name;
-	
-	$total = mysql_fetch_row(mysql_query("SELECT FOUND_ROWS()"));
-	$pages = ceil($total[0] / $pics);
+	$page_title = "Viewing Group: " . $title . " - " . SITE_NAME;
+
+	$pages = ceil(mysql_found_rows() / $pics);
 	
 
 	require_once("header.php");
@@ -118,7 +117,7 @@
 					echo '
 							<span class="list_image">
 								<a href="/post/view/' . $id['id'][$i] . '">
-									<img src="' . $base_url . '/thumbs/' . $id['hash'][$i] . '.jpg" alt="' . $imgtags . '" title="' . $imgtags . '"' . $class . ' />
+									<img src="' . BASE_URL . '/thumbs/' . $id['hash'][$i] . '.jpg" alt="' . $imgtags . '" title="' . $imgtags . '"' . $class . ' />
 								</a>
 							</span>';
 				}
