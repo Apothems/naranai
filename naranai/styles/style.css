@@ -511,7 +511,6 @@ a
 	padding: 5px;
 	cursor: pointer;
 	font-size: small;
-	display: table;
 	z-index: 300;
 	overflow: auto;
 	max-width: 300px;

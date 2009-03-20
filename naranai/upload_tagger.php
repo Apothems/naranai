@@ -1,19 +1,16 @@
 <?php
-
 	require_once('hibbity/dbinfo.php');
+	require_once(SITE_DIR . '/lib/functions.php');
 	
 	
 	$page_type = "post";
-	$head 		= ' <script src="' . BASE_URL . '/lib/textboxlist.js" type="text/javascript"></script>
-					<script src="' . BASE_URL . '/lib/facebooklist.js" type="text/javascript"></script>
-					<script src="' . BASE_URL . '/lib/formcheck.js" type="text/javascript"></script>
-					<style type="text/css">
-						@import url(\'' . BASE_URL . '/styles/facelist.css\');
-						@import url(\'' . BASE_URL . '/styles/comments.css\');
-						@import url(\'' . BASE_URL . '/styles/formcheck.css\');
-					</style>
-					<script type="text/javascript">
-						window.addEvent(\'domready\', function(){
+
+	$head = array(
+		'js' => array(
+			'load' => array('/lib/textboxlist.js',
+							'/lib/facebooklist.js',
+							'/lib/formcheck.js'),
+			'out'  => '						window.addEvent(\'domready\', function(){
 							var elements = $$(\'.edit form\');
 							var id_list;
 							$(\'formsender\').addEvent(\'click\', function(){
@@ -49,16 +46,20 @@
 							//	this.action = "/save";
 							//});
 														
-						});
-					</script>
-					<style type="text/css">
-						.edit .holder .bit-input .maininput
+						});'
+			),
+
+		'css' => array(
+			'load' => array('/styles/facelist.css',
+							'/styles/comments.css',
+							'/styles/formcheck.css'),
+			'out'  => '						.edit .holder .bit-input .maininput
 						{
 							width: 80px;
-						}
-					</style>
-					';
-	
+						}'
+		)
+	);
+
 	$page_title = "Tag your images - " . SITE_NAME;
 	
 	if(isset($_COOKIE['user_id']))

@@ -1,25 +1,25 @@
 <?php
-
 	require_once('hibbity/dbinfo.php');
+	require_once(SITE_DIR . '/lib/functions.php');
 	
-	$sep = "?";
-	if(!isset($_COOKIE["user_id"]))
-	{
-		$sql = "SELECT COUNT(*) as uploads FROM `images` WHERE `posted` >= DATE_SUB(CURDATE(),INTERVAL 1 DAY) AND `owner_ip` = '" . $_SERVER['REMOTE_ADDR'] . "'";
-		$get = mysql_query($sql);
-		$run = mysql_fetch_assoc($get);
-		$sep = "&";
+	if( !isset($_COOKIE["user_id"]) ) {
+		$sql      = "SELECT COUNT(*) as uploads FROM `images` WHERE `posted` >= DATE_SUB(CURDATE(),INTERVAL 1 DAY) AND `owner_ip` = '" . $_SERVER['REMOTE_ADDR'] . "'";
+		$uploaded = intval(mysql_result(mysql_query($sql), 0));
+		$sep      = "&";
+	} else {
+		$uploaded = 0;
+		$sep      = "?";
 	}
-	
-	$page_type = "post";
-	$head 		= " <script src=\"/lib/formcheck.js\" type=\"text/javascript\"></script>
-					<script type=\"text/javascript\" src=\"" . BASE_URL . "/lib/Swiff.Uploader.js\"></script>
-					<script type=\"text/javascript\" src=\"" . BASE_URL . "/lib/Fx.ProgressBar.js\"></script>
-					<script type=\"text/javascript\" src=\"" . BASE_URL . "/lib/FancyUpload2.js\"></script>
-					<script type=\"text/javascript\" src=\"" . BASE_URL . "/lib/moocombo.js\"></script>
-					<script type=\"text/javascript\">
 
-						window.addEvent('domready', function() {
+	$page_type = "post";
+
+	$head = array(
+		'js' => array(
+			'load' => array('/lib/Swiff.Uploader.js',
+							'/lib/Fx.ProgressBar.js',
+							'/lib/FancyUpload2.js',
+							'/lib/moocombo.js'),
+			'out' => "						window.addEvent('domready', function() {
 	
 							var swiffy = new FancyUpload2($('upload_status'), $('file_list'), {
 								url: $('upload_form').action,
@@ -60,19 +60,19 @@
 							});
 						 
 							
-						});
-					
+						});"
+		),
 
-					</script>
-					<style type=\"text/css\">
-						@import url('" . BASE_URL . "/styles/formcheck.css');
-						@import url('" . BASE_URL . "/styles/upload.css');
-					</style>
-					";
+		'css' => array(
+			'load' => array('/styles/formcheck.css',
+							'/styles/upload.css'
+			)
+		)
+	);
+
 	$page_title = "Image Upload - " . SITE_NAME;
-	
+
 	require_once("header.php");
-	
 ?>
 
 <div id="main">
@@ -97,7 +97,7 @@
         <div class="spacer"></div>
     	
         <?php
-			if($run['uploads'] < 10)
+			if( $uploaded < 10 )
 			{
 		?>
 	    <form class="registration" id="upload_form" action="<?php echo BASE_URL; ?>/uploader/<?php echo $_COOKIE["user_id"] ?>" method="post">
