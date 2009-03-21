@@ -33,25 +33,29 @@
 	$h          = mysql_query($sql);
 	$note_count = mysql_num_rows($h) ? mysql_result($h, 0) : 0;
 
-	$head       = array(
-		'js'  => array(
-			'load' => array('/lib/textboxlist.js',
-					        '/lib/facebooklist.js',
-					        '/lib/formcheck.js',
-					        '/lib/moocombo.js',
-					        '/lib/view.js'),
-			'var'  => array('orig_width' => $run['width'],
-					        'note_id'    => $note_count,
-					        'base_url'   => BASE_URL)
-		),
-
-		'css' => array(
-			'load' => array('/styles/facelist.css',
-			                '/styles/comments.css',
+	$head =	array
+		(
+			'js_load' =>	array
+						(
+							'/lib/textboxlist.js',
+							'/lib/facebooklist.js',
+							'/lib/formcheck.js',
+							'/lib/moocombo.js',
+							'/lib/view.js'
+						),
+			'js_var'  =>	array
+						(
+							'orig_width' => $run['width'],
+							'note_id'    => $note_count,
+							'base_url'   => BASE_URL
+						),
+			'css_load' =>	array
+						(
+							'/styles/facelist.css',
+							'/styles/comments.css',
 							'/styles/formcheck.css'
-			)
-		)
-	);
+						)
+		);
 	
 	$page_title = "Post " . $run['id'] . " - " . SITE_NAME;
 	
@@ -144,7 +148,7 @@
             	<?php
 					foreach($tags as $tag => $count)
 					{
-						echo '<a href="' , BASE_URL , '/post/list/' , $tag , '" class="' , $count[1] , '">' , $tag , '</a> ' , $count[0] , '<br />';
+						echo '<a href="' , BASE_URL , '/post/list/' , $tag , '" class="' , $count[1] , '">' , str_replace('_', ' ', $tag) , '</a> ' , $count[0] , '<br />';
 					}
 				?>
             </div>
@@ -156,7 +160,7 @@
             </div>
             <div class="block_content">
             	<?php
-					$sql_block = "SELECT tag, count, type FROM tags WHERE count > 0 ORDER BY count DESC LIMIT 15";
+					$sql_block = "SELECT REPLACE(tag, '_', ' ') as tag, count, type FROM tags WHERE count > 0 ORDER BY count DESC LIMIT 15";
 					$get_block = mysql_query($sql_block);
 					while($run_block = mysql_fetch_assoc($get_block))
 					{

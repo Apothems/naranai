@@ -5,64 +5,68 @@
 	
 	$page_type = "post";
 
-	$head = array(
-		'js' => array(
-			'load' => array('/lib/textboxlist.js',
-							'/lib/facebooklist.js',
-							'/lib/formcheck.js'),
-			'out'  => '						window.addEvent(\'domready\', function(){
-							var elements = $$(\'.edit form\');
-							var id_list;
-							$(\'formsender\').addEvent(\'click\', function(){
-								elements.each(function(e){
-									id = e.id.replace(\'form_\', \'\');
-									completer = \'completer_\' + id;
-									eval(completer + ".update();");
-									e.send();
-									if(e == elements.getLast())
-									{
-										$(\'main_area\').innerHTML = \'<h1>Thanks for tagging your shit.</h1><br /><a href="' . BASE_URL . '/post/list" style=\"font-size:20px;font-weight:bold;">Post List &raquo;</a>\'
-									}
-								});
-							});
-							
-							elements.each(function(e){
-								id = e.id.replace(\'form_\', \'\');
-								holdy = $(\'taglist_\' + id);
-								boxy  = $(\'img_tags_\' + id);
-								completer = \'completer_\' + id;
-								eval(completer + " = new FacebookList(boxy, holdy)");
-								new Request.JSON({\'url\': \'/tag_list.php\', \'onComplete\': function(j) {
-									eval("j.each(" + completer + ".autoFeed, " + completer + ");");
-								}}).send();
+	$head =	array
+		(
+			'js_load' =>	array
+							(
+								'/lib/textboxlist.js',
+								'/lib/facebooklist.js',
+								'/lib/formcheck.js'
+							),
+			'js_out'  =>	'
+	window.addEvent(\'domready\', function(){
+		var elements = $$(\'.edit form\');
+		var id_list;
+		$(\'formsender\').addEvent(\'click\', function(){
+			elements.each(function(e){
+				id = e.id.replace(\'form_\', \'\');
+				completer = \'completer_\' + id;
+				eval(completer + ".update();");
+				e.send();
+				if(e == elements.getLast())
+				{
+					$(\'main_area\').innerHTML = \'<h1>Thanks for tagging your shit.</h1><br /><a href="' . BASE_URL . '/post/list" style=\"font-size:20px;font-weight:bold;">Post List &raquo;</a>\'
+				}
+			});
+		});
+		
+		elements.each(function(e){
+			id = e.id.replace(\'form_\', \'\');
+			holdy = $(\'taglist_\' + id);
+			boxy  = $(\'img_tags_\' + id);
+			completer = \'completer_\' + id;
+			eval(completer + " = new FacebookList(boxy, holdy)");
+			new Request.JSON({\'url\': \'/tag_list.php\', \'onComplete\': function(j) {
+				eval("j.each(" + completer + ".autoFeed, " + completer + ");");
+			}}).send();
 
-							});
-							
-							
-							  
-							
-							 //$(\'tagform\').addEvent(\'submit\', function(){
-							//	tlist2.update();
-							//	this.action = "/save";
-							//});
-														
-						});'
-			),
+		});
+		
+		
+		  
+		
+		 //$(\'tagform\').addEvent(\'submit\', function(){
+		//	tlist2.update();
+		//	this.action = "/save";
+		//});
+									
+	});',
 
-		'css' => array(
-			'load' => array('/styles/facelist.css',
+		'css_load' =>	array
+						(
+							'/styles/facelist.css',
 							'/styles/comments.css',
-							'/styles/formcheck.css'),
-			'out'  => '						.edit .holder .bit-input .maininput
-						{
-							width: 80px;
-						}'
-		)
-	);
+							'/styles/formcheck.css'
+						),
+		'css_out'  =>	'
+	.edit .holder .bit-input .maininput {
+		width: 80px;
+	}'
+		);
 
 	$page_title = "Tag your images - " . SITE_NAME;
 	
-	if(isset($_COOKIE['user_id']))
+	if( isset($_COOKIE['user_id']) )
 	{
 		$where = '`owner_id` = ' . $_COOKIE['user_id'];
 	}
@@ -106,35 +110,35 @@
 				{	
 					?>
 					<span class="list_image">
-								<a href="<?php echo BASE_URL; ?>/post/view/<?php echo $id['id']; ?>">
-									<img src="<?php echo BASE_URL; ?>/thumbs/<?php echo $id['hash']; ?>.jpg" alt="" title="" />
-								</a>
-                                <div class="edit">
-                                    <form id="form_<?php echo $id['id']; ?>" action="<?php echo BASE_URL; ?>/save" method="post">
-                                    
-                                    <div>
-                                        
-                                        <div class="edit_form for_tagging">
-                                            <input type="text" name="tag_field" id="img_tags_<?php echo $id['id']; ?>" />
-                                            <input type="hidden" name="picture_id" value="<?php echo $id['id']; ?>" />
-                                            <div id="taglist_<?php echo $id['id']; ?>" class="taglist">
-                                                <div class="default">
-                                                    Type for delicious tag search. Need a new tag? Type it and hit space.
-                                                </div>
-                                                <?php
-                                                        
-                                                        echo "<ul>";
-                                                            echo "<li>tagme</li>";	
-                                                        echo "</ul>";
-                                                ?>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    </form>
-                                    
-                                </div>
-							</span>
+						<a href="<?php echo BASE_URL; ?>/post/view/<?php echo $id['id']; ?>">
+							<img src="<?php echo BASE_URL; ?>/thumbs/<?php echo $id['hash']; ?>.jpg" alt="" title="" />
+						</a>
+						<div class="edit">
+							<form id="form_<?php echo $id['id']; ?>" action="<?php echo BASE_URL; ?>/save" method="post">
+							
+							<div>
+								
+								<div class="edit_form for_tagging">
+									<input type="text" name="tag_field" id="img_tags_<?php echo $id['id']; ?>" />
+									<input type="hidden" name="picture_id" value="<?php echo $id['id']; ?>" />
+									<div id="taglist_<?php echo $id['id']; ?>" class="taglist">
+										<div class="default">
+											Type for delicious tag search. Need a new tag? Type it and hit space.
+										</div>
+										<?php
+												
+												echo "<ul>";
+													echo "<li>tagme</li>";	
+												echo "</ul>";
+										?>
+									</div>
+								</div>
+							</div>
+							
+							</form>
+							
+						</div>
+					</span>
                    <?php
 				}
 				
@@ -149,13 +153,9 @@
 				echo "<h1>No recent posts.</h1>";
 			}
 			?>
-		
-    
+
         </div>
-    </div>  
-    
-     
-    
+    </div> 
 </div>
 <?php
 	require_once("footer.php");

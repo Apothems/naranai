@@ -13,62 +13,62 @@
 
 	$page_type = "post";
 
-	$head = array(
-		'js' => array(
-			'load' => array('/lib/Swiff.Uploader.js',
-							'/lib/Fx.ProgressBar.js',
-							'/lib/FancyUpload2.js',
-							'/lib/moocombo.js'),
-			'out' => "						window.addEvent('domready', function() {
-	
-							var swiffy = new FancyUpload2($('upload_status'), $('file_list'), {
-								url: $('upload_form').action,
-								fieldName: 'photoupload',
-								path: '" . BASE_URL . "/lib/Swiff.Uploader.swf',
-								limitSize: 2 * 1024 * 1024,
-								limitFiles: 10,
-								onLoad: function() {
-									$('upload_status').removeClass('hide');
-									$('form_fallback').destroy();
-								},
-								onAllComplete: function() {
-									$('progress_holder').innerHTML = '<h1>All Uploads Complete.</h1><br /><a href=\"" . BASE_URL . "/post/upload/tag\" style=\"font-size:20px;font-weight:bold;\">Tag Uploads &raquo;</a>';
-								},
-								// The changed parts!
-								debug: true, // enable logs, uses console.log
-								target: 'file_browse' // the element for the overlay (Flash 10 only)
-							});
-						 		
-							swiffy.options.typeFilter = {'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png'};
+	$head =	array
+		(
+			'js_load' =>	array
+							(
+								'/lib/Swiff.Uploader.js',
+								'/lib/Fx.ProgressBar.js',
+								'/lib/FancyUpload2.js',
+								'/lib/moocombo.js'
+							),
+			'js_out' =>	"
+	window.addEvent('domready', function() {
+		var swiffy = new FancyUpload2($('upload_status'), $('file_list'), {
+			url: $('upload_form').action,
+			fieldName: 'photoupload',
+			path: '" . BASE_URL . "/lib/Swiff.Uploader.swf',
+			limitSize: 2 * 1024 * 1024,
+			limitFiles: 10,
+			onLoad: function() {
+				$('upload_status').removeClass('hide');
+				$('form_fallback').destroy();
+			},
+			onAllComplete: function() {
+				$('progress_holder').innerHTML = '<h1>All Uploads Complete.</h1><br /><a href=\"" . BASE_URL . "/post/upload/tag\" style=\"font-size:20px;font-weight:bold;\">Tag Uploads &raquo;</a>';
+			},
+			// The changed parts!
+			debug: true, // enable logs, uses console.log
+			target: 'file_browse' // the element for the overlay (Flash 10 only)
+		});
+			
+		swiffy.options.typeFilter = {'Images (*.jpg, *.jpeg, *.gif, *.png)': '*.jpg; *.jpeg; *.gif; *.png'};
 
-							
-							$('file_browse').addEvent('click', function() {	
-								swiffy.browse();
-								return false;
-							});
-						 
-						 
-							$('file_clear').addEvent('click', function() {
-								swiffy.removeFile();
-								return false;
-							});
-						 
-							$('file_upload').addEvent('click', function() {
-								swiffy.setOptions({url: $('upload_form').action + '/' + encodeURIComponent($('group_field').value)});
-								swiffy.upload();
-								return false;
-							});
-						 
-							
-						});"
-		),
+		
+		$('file_browse').addEvent('click', function() {	
+			swiffy.browse();
+			return false;
+		});
+	 
+	 
+		$('file_clear').addEvent('click', function() {
+			swiffy.removeFile();
+			return false;
+		});
+	 
+		$('file_upload').addEvent('click', function() {
+			swiffy.setOptions({url: $('upload_form').action + '/' + encodeURIComponent($('group_field').value)});
+			swiffy.upload();
+			return false;
+		});
+	});",
 
-		'css' => array(
-			'load' => array('/styles/formcheck.css',
-							'/styles/upload.css'
-			)
-		)
-	);
+			'css_load' =>	array
+							(
+								'/styles/formcheck.css',
+								'/styles/upload.css'
+							)
+		);
 
 	$page_title = "Image Upload - " . SITE_NAME;
 

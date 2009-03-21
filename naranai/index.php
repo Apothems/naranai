@@ -6,7 +6,6 @@
 	$page_type  = "post";
 	$pics       = 20;
 	$title      = "all posts";
-	$head       = array();
 	$search_tag = "";
 	$counts     = array();
 	$tags       = array();
@@ -22,21 +21,13 @@
 	{
 		$search_tags = explode(" ", $search_tag);
 		sort($search_tags);
-
-		# Remove unneeded, duplicate values and set $title to the correct values.
 		$search_tags = array_unique($search_tags);
 		$title       = htmlspecialchars(implode(' ', $search_tags), ENT_QUOTES);
-
-		# Sanitize string.
 		$search_tags = array_map('mysql_real_escape_string', $search_tags);
-
-		# Imploding it all in one is 5x faster.
 		$search_tag = "HAVING LOCATE('" . implode("', tag) > 0 AND LOCATE('", $search_tags) . "', tag) > 0 ";
 	}
 
-	# Setup page title.
 	$page_title = "Viewing " . $title . " - " . SITE_NAME;
-
 
 	$sql = "SELECT SQL_CALC_FOUND_ROWS i.id, i.hash, group_concat(t.tag separator ' ') as tag, group_concat(t.count separator ' ') as count, group_concat(t.type separator ' ') as type FROM `images` i LEFT OUTER JOIN `image_tags` s ON i.id = s.image_id LEFT OUTER JOIN `tags` t ON s.tag_id = t.id GROUP BY i.id " . $search_tag . "ORDER BY i.id DESC LIMIT " . $limit . ", " . $pics;
 
@@ -87,7 +78,7 @@
 					$get = mysql_query($sql);
 					while($run = mysql_fetch_assoc($get))
 					{
-						echo '<a href="', BASE_URL, '/post/list/' , $run['tag'] , '" class="' . $run['type'] . '">' , $run['tag'] , '</a> ' , $run['count'] , '<br />';
+						echo '<a href="', BASE_URL, '/post/list/' , $run['tag'] , '" class="' . $run['type'] . '">' , str_replace('_', ' ', $run['tag']) , '</a> ' , $run['count'] , '<br />';
 					}
 				?>
             </div>
@@ -106,7 +97,7 @@
 						$count[1] = explode(' ', $count[1]);
 
 						foreach($stags as $i => $s) {
-							echo '<a href="', BASE_URL , '/post/list/' . $s . '" class="' . $count[1][$i] . '">' . $s . '</a> ' . $count[0][$i] . '<br />';
+							echo '<a href="', BASE_URL , '/post/list/' . $s . '" class="' . $count[1][$i] . '">' , str_replace('_', ' ', $s) , '</a> ' . $count[0][$i] . '<br />';
 						}
 					}
 				?>
@@ -124,7 +115,7 @@
 	    </div>
         <div class="spacer"></div>
     		<?php
-				$size = sizeof($id['id']);
+				$size       = sizeof($id['id']);
 				for($i = 0; $i < $size; ++$i)
 				{
 					$imgtags = $id['tags'][$i];
@@ -136,7 +127,7 @@
 					echo '
 							<span class="list_image">
 								<a href="', BASE_URL , '/post/view/' , $id['id'][$i] , '">
-									<img src="',  BASE_URL , '/thumbs/' , $id['hash'][$i] , '.jpg" alt="' , $imgtags , '" title="' , $imgtags , '"' , $class , ' />
+									<img src="',  BASE_URL , '/thumbs/' , $id['hash'][$i] , '.jpg" alt="' , $imgtags , '" title="' , str_replace('_', ' ', $imgtags) , '"' , $class , ' />
 								</a>
 							</span>';
 				}

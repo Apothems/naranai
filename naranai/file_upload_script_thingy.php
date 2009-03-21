@@ -1,26 +1,22 @@
 <?php
- 
-	require_once('hibbity/dbinfo.php');
-	
- 	
- 	
- 	
+require_once('hibbity/dbinfo.php');
+
 $result = array();
  
-if (isset($_FILES['photoupload']) )
+if( isset($_FILES['photoupload']) )
 {
-	$name = $_FILES['photoupload']['name'];
-	$file = $_FILES['photoupload']['tmp_name'];
+	$name     = $_FILES['photoupload']['name'];
+	$file     = $_FILES['photoupload']['tmp_name'];
 	$filesize = $_FILES['photoupload']['size'];
-	$error = false;
-	$size = false;
-	$group = mysql_real_escape_string(urldecode($_GET["group"]));
+	$error    = false;
+	$size     = false;
+	$group    = mysql_real_escape_string(urldecode($_GET["group"]));
 
-	if (!is_uploaded_file($file) || ($_FILES['photoupload']['size'] > 2 * 1024 * 1024) )
+	if( !is_uploaded_file($file) || ($_FILES['photoupload']['size'] > 7 * 1024 * 1024) )
 	{
-		$error = 'Please upload only files smaller than 2Mb!';
+		$error = 'Please upload only files smaller than 7Mb!';
 	}
-	if (!$error && !($size = @getimagesize($file) ) )
+	if( !$error && !($size = @getimagesize($file)) )
 	{
 		$error = 'Please upload only images, no other files are supported.';
 	}
@@ -34,17 +30,17 @@ if (isset($_FILES['photoupload']) )
 	}
 	//CREATE MD% SUMMING SHIT
  
-	if ($error)
+	if( $error )
 	{
 		$result['result'] = 'failed';
-		$result['error'] = $error;
+		$result['error']  = $error;
 	}
 	else
 	{
 			$hash = md5($name.$filesize.$file.microtime());
-			$ab = substr($hash, 0, 2);
-			$ext = explode(".", $name);
-			$ext = array_pop($ext);
+			$ab   = substr($hash, 0, 2);
+			$ext  = explode(".", $name);
+			$ext  = array_pop($ext);
 			$user = 1;
 			if($_GET["user_id"])
 			{

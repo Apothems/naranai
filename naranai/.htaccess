@@ -43,7 +43,8 @@ RewriteRule ^admin/delete/(\d*)/?$ admin/deletorizer.php?picture_id_number=$1 [L
 RewriteRule ^note/save/?$ note_saver.php [L]
 
 # Redirect to fucking fat face.
-ErrorDocument 404 /post/list
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^(.*)$ post/list [L]
 </IfModule>
 
 <IfModule mod_php5.c>

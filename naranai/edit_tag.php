@@ -1,19 +1,30 @@
 <?php
-
 	require_once('hibbity/dbinfo.php');
-	
-	
+
 	$page_type = "tags";
-	$head 		= " <script src=\"/lib/formcheck.js\" type=\"text/javascript\"></script>
-					<style type=\"text/css\">
-						@import url('/styles/formcheck.css');
-					</style>
-					";
+	$normal    = '';
+	$character = '';
+	$artist    = '';
+	$series    = '';
+	$run       = array('type' => 'normal', 'tag' => '');
+
+	$head =	array
+		(
+			'js_load' =>	array
+						(
+							'/lib/formcheck.js'
+						),
+			'css_load' =>	array
+						(
+							'/styles/formcheck.css'
+						)
+		);
+
 	$thing = "Add Tag";
 	$page_title = "Add Tag - " . SITE_NAME;
-	if(isset($_GET["tag"]))
+	if( isset($_GET["tag"]) )
 	{
-		$sql = "SELECT tag, type FROM `tags` WHERE `id` = " . $_GET["tag"];
+		$sql = "SELECT tag, type FROM `tags` WHERE `id` = " . abs($_GET["tag"]);
 		$get = mysql_query($sql);
 		$run = mysql_fetch_assoc($get);
 		$thing = "Edit Tag";
@@ -61,7 +72,7 @@
         <div class="spacer"></div>
     	
         <div id="edit">
-	    <form class="registration" id="edit_form" action="/tags/edit/commit" method="post">
+	    <form class="registration" id="edit_form" action="<?php echo BASE_URL; ?>/tags/edit/commit" method="post">
 	                
             
             <div>
@@ -90,7 +101,7 @@
                     &nbsp;
                 </span>
                 <span class="edit_form">
-                	<input type="hidden" name="tag_id" value="<?php echo $_GET["tag"]; ?>" />
+                	<input type="hidden" name="tag_id" value="<?php echo isset($_GET['tag']) ? abs($_GET["tag"]) : ''; ?>" />
                     <input type="submit" name="submit" value="<?php echo $thing ?>" />
                 </span>
             </div>

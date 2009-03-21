@@ -4,13 +4,10 @@
 	
 	
 	$page_type = "groups";
-	
-	$pagenum = 0;
-	$pics = 20;
-	
-	
-	if($_GET["pagenum"]) $pagenum = $_GET["pagenum"] - 1;
-	$limit = $pics * $pagenum;
+	$pagenum   = 0;
+	$pics      = 20;
+	$page_num  = isset($_GET["pagenum"]) ? abs($_GET["pagenum"] - 1) : 0;
+	$limit     = $pics * $pagenum;
 	
 	$sql = "SELECT DISTINCT id FROM `groups` WHERE group_name != '' GROUP BY id ORDER BY id DESC";
 	$get = mysql_query($sql);
@@ -46,7 +43,7 @@
 					$get_pop = mysql_query($sql_pop);
 					while($run = mysql_fetch_assoc($get_pop))
 					{
-						echo '<a href="/post/list/' . $run['tag'] . '" class="' . $run['type'] . '">' . $run['tag'] . '</a> ' . $run['count'] . '<br />';
+						echo '<a href="', BASE_URL , '/post/list/' . $run['tag'] . '" class="' . $run['type'] . '">' . $run['tag'] . '</a> ' . $run['count'] . '<br />';
 					}
 				?>
             </div>
@@ -77,7 +74,7 @@
 							<span class="list_image">
 								<span class="small">' . $run['group_name'] . '
 								<span class="light">(' . $count . ' images)</span></span><br />
-								<a href="/group/view/' . $run['id'] . '">
+								<a href="', BASE_URL , '/group/view/' . $run['id'] . '">
 									<img src="' . BASE_URL . '/thumbs/' . $run_pop['hash'] . '.jpg" alt="" title="" />
 								</a>
 							</span>';
@@ -90,7 +87,7 @@
 					                    
 					if($pagenum > 0)
 					{
-						echo '<span><a href="/group/list/' . ($pagenum) . '">&laquo; Previous</a></span>';
+						echo '<span><a href="', BASE_URL , '/group/list/' . ($pagenum) . '">&laquo; Previous</a></span>';
 					}
 					else
 					{
@@ -99,7 +96,7 @@
 					
 					if($pagenum == 0) $this_page = ' class="current_page"';
 					else $this_page = '';
-					echo '<span><a href="/group/list/1"' . $this_page . '>1</a>';
+					echo '<span><a href="', BASE_URL , '/group/list/1"' . $this_page . '>1</a>';
 					$this_page = '';
                     
 					if($pages < 10)
@@ -108,7 +105,7 @@
                         {
                             if($i == $pagenum+1) $this_page = ' class="current_page"';
 							else $this_page = "";
-                            echo '<a href="/group/list/' . $i . '"' . $this_page . '>' . $i . '</a>';
+                            echo '<a href="', BASE_URL , '/group/list/' . $i . '"' . $this_page . '>' . $i . '</a>';
                         }
 					}
 					elseif($pagenum > ($pages - 10))
@@ -118,7 +115,7 @@
                         {
                             if($i == $pagenum+1) $this_page = ' class="current_page"';
 							else $this_page = "";
-                            echo '<a href="/group/list/' . $i . '"' . $this_page . '>' . $i . '</a>';
+                            echo '<a href="', BASE_URL , '/group/list/' . $i . '"' . $this_page . '>' . $i . '</a>';
                         }   
                     }
 					elseif($pagenum > 7)
@@ -128,7 +125,7 @@
                         {
                             if($i == $pagenum+1) $this_page = ' class="current_page"';
 							else $this_page = "";
-                            echo '<a href="/group/list/' . $i . '"' . $this_page . '>' . $i . '</a>';
+                            echo '<a href="', BASE_URL , '/group/list/' . $i . '"' . $this_page . '>' . $i . '</a>';
                         }
                         echo '...';
                     }
@@ -138,7 +135,7 @@
                         {
                             if($i == $pagenum+1) $this_page = ' class="current_page"';
 							else $this_page = "";
-                            echo '<a href="/group/list/' . $i . '"' . $this_page . '>' . $i . '</a>';
+                            echo '<a href="', BASE_URL , '/group/list/' . $i . '"' . $this_page . '>' . $i . '</a>';
                         }
                         echo '...';
                     }
@@ -147,13 +144,13 @@
 					{
 						if($pages == $pagenum+1) $this_page = ' class="current_page"';
 						else $this_page = '';	
-						echo '<a href="/group/list/' . $pages . '"' . $this_page . '>' . $pages . '</a>';
+						echo '<a href="', BASE_URL , '/group/list/' . $pages . '"' . $this_page . '>' . $pages . '</a>';
 					}
 					echo "</span>";
 					
 					if($pages != $pagenum+1)
 					{
-						echo '<span><a href="/group/list/' . ($pagenum + 2) . '">Next &raquo;</a></span>';
+						echo '<span><a href="', BASE_URL , '/group/list/' . ($pagenum + 2) . '">Next &raquo;</a></span>';
 					}
 					else
 					{

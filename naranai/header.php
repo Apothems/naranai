@@ -2,9 +2,9 @@
 	$post_menu =	array
 					(
 						'List' 	 		=> '/post/list',
-						'Favourites'	=> '#/post/favourites',
+						'Favourites'	=> '#', # /post/favourites
 						'Upload'		=> '/post/upload',
-						'Help'			=> '#/help'
+						'Help'			=> '#' # /help
 					);
 	$tags_menu =	array
 					(
@@ -18,7 +18,7 @@
 	$groups_menu =	array
 					(
 						'List' 	 		=> '/group/list',
-						'Manage Groups'	=> '#/group/manage'					
+						'Manage Groups'	=> '#' # /group/manage
 					);
 	$account_menu =	array
 					(
@@ -70,35 +70,33 @@
 include_once('tag_search.php');
 
 // Load the JS
-if( !isset($head['js']['load']) ) $head['js']['load'] = array();
-array_unshift($head['js']['load'], '/lib/mootools.js',
-								   '/lib/mootoolsmore.js',
-								   '/lib/observer.js',
-								   '/lib/autocompleter.js',
-								   '/lib/autocompleter.local.js');
+if( !isset($head['js_load']) ) $head['js_load'] = array();
+array_unshift($head['js_load'],	'/lib/mootools.js',
+								'/lib/mootoolsmore.js',
+								'/lib/observer.js',
+								'/lib/autocompleter.js',
+								'/lib/autocompleter.local.js');
 
-$head['js']['out'] =  "
+$head['js_out'] =  "
 	window.addEvent('domready', function() {
-			tags = " . $tag_search . ";
-			new Autocompleter.Local('searchbox', tags, {
-												'minLength': 1, // We need at least 1 character
-												'selectMode': 'type-ahead', // Instant completion
-												'separator': ' ', // NOT DEFAULT NO MORE BITCHES.
-												'multiple': true // Tag support, by default comma separated
-											});	
-			
-			 
-	});" . (isset($head['js']['out']) ? $head['js']['out'] : '' );
+		tags = " . $tag_search . ";
+		new Autocompleter.Local('searchbox', tags, {
+				'minLength': 1, // We need at least 1 character
+				'selectMode': 'type-ahead', // Instant completion
+				'separator': ' ', // NOT DEFAULT NO MORE BITCHES.
+				'multiple': true // Tag support, by default comma separated
+		});		 
+	});" . (isset($head['js_out']) ? $head['js_out'] : '' );
 
 // Load the CSS
-if( !isset($head['css']['load']) ) $head['css']['load'] = array();
-array_unshift($head['css']['load'], '/styles/style.css', '/styles/autocompleter.css');
-$head['css']['out']    =  '
-<!--[if lt IE 8]>
-.list_image {
-    display: inline;
-}
-<![endif]-->' . (isset($head['css']['out']) ? $head['css']['out'] : '' );
+if( !isset($head['css_load']) ) $head['css_load'] = array();
+array_unshift($head['css_load'], '/styles/style.css', '/styles/autocompleter.css');
+$head['css_out']    =  '
+	<!--[if lt IE 8]>
+	.list_image {
+		display: inline;
+	}
+	<![endif]-->' . (isset($head['css_out']) ? $head['css_out'] : '' );
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -111,29 +109,27 @@ $head['css']['out']    =  '
 	$tab2 = $tab . '	';
 
 	# Start with the JS
-	$data =& $head['js'];
-	echo $tab . '<script src="' , BASE_URL , implode('" type="text/javascript"></script>' . $tab . '<script src="' . BASE_URL, $data['load']) , '" type="text/javascript"></script>';
+	echo $tab . '<script src="' , BASE_URL , implode('" type="text/javascript"></script>' . $tab . '<script src="' . BASE_URL, $head['js_load']) , '" type="text/javascript"></script>';
 
-	if( isset($data['var']) ) {
+	if( isset($head['js_var']) ) {
 		echo $tab , '<script type="text/javascript">';
-		foreach($data['var'] as $var => $value) {
+		foreach($head['js_var'] as $var => $value) {
 			echo $tab2 , 'var ' , $var , ' = ' , is_numeric($value) ? $value : "'" . $value . "'" , ';';
 		}
 		echo $tab , '</script>';
 	}
 
 	echo $tab , '<script type="text/javascript">';
-	echo $data['out'];
+	echo $head['js_out'];
 	echo $tab , '</script>';
 
 	# Finally, do the CSS
-	$data =& $head['css'];
 	echo $tab, '<style type="text/css">';
-	echo $tab2, "@import url('", BASE_URL , implode("');" . $tab2 . "@import url('" . BASE_URL, $data['load']) , "');";
+	echo $tab2, "@import url('", BASE_URL , implode("');" . $tab2 . "@import url('" . BASE_URL, $head['css_load']) , "');";
 	echo $tab, '</style>';
 
 	echo $tab , '<style type="text/css">';
-	echo $data['out'];
+	echo $head['css_out'];
 	echo $tab , '</style>';
 
 	$head = null;
@@ -166,7 +162,8 @@ $head['css']['out']    =  '
 			</a>
         </span>
         <span<?php echo $account_active; ?>>
-        	<a href="<?php echo BASE_URL; ?>#/account">
+		<?php # /account ?>
+        	<a href="#">
             	Account
 			</a>
         </span>
@@ -189,7 +186,7 @@ $head['css']['out']    =  '
         
 		<div id="log_menu" class="right">
             <?php
-			if(isset($_COOKIE["user_name"]))
+			if( isset($_COOKIE["user_name"]) )
 			{
 			?>
             <span>

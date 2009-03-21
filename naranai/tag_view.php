@@ -4,31 +4,28 @@
 	
 	
 	$page_type = "tags";
-	
-	$pagenum = 0;
-	$pics = 40;
-	$type = "Tag";
-	if(isset($_GET["type"]))
+	$pics      = 40;
+	$type      = "Tag";
+	$tag_type  = '';
+	$pagenum   = isset($_GET["pagenum"]) ? abs($_GET["pagenum"] - 1) : 0;
+	$limit     = $pics * $pagenum;
+
+	if( isset($_GET["type"]) )
 	{
-		$type = ucfirst($_GET["type"]);
+		$type     = ucfirst($_GET["type"]);
 		$tag_type = " WHERE type = '" . mysql_real_escape_string($_GET["type"]) . "'";
 	}
-	
-	
-	if($_GET["pagenum"]) $pagenum = $_GET["pagenum"] - 1;
-	$limit = $pics * $pagenum;
-	
+
+	$page_title = "Viewing " . $type . " List - " . SITE_NAME;
+
 	$sql = "SELECT id FROM `tags`" . $tag_type . " ORDER BY tag";
 	$get = mysql_query($sql);
-	
-	$page_title = "Viewing " . $type . " List - " . SITE_NAME;
-	
+
 	$total = mysql_num_rows($get);
 	$pages = ceil($total / $pics);
-	
+
 	$sql = "SELECT id, tag, count, type FROM `tags`" . $tag_type . " ORDER BY tag LIMIT " . $limit . ", " . $pics;
 	$get = mysql_query($sql);
-	
 
 	require_once("header.php");
 ?>
@@ -52,7 +49,7 @@
 					$get_pop = mysql_query($sql_pop);
 					while($run = mysql_fetch_assoc($get_pop))
 					{
-						echo '<a href="/post/list/' . $run['tag'] . '" class="' . $run['type'] . '">' . $run['tag'] . '</a> ' . $run['count'] . '<br />';
+						echo '<a href="', BASE_URL , '/post/list/' , $run['tag'] , '" class="' , $run['type'] , '">' , $run['tag'] , '</a> ' , $run['count'] , '<br />';
 					}
 				?>
             </div>
@@ -83,15 +80,15 @@
                     </th>
                 </tr>
     		<?php
-				while($run = mysql_fetch_assoc($get))
+				while( $run = mysql_fetch_assoc($get) )
 				{	
-					if($run["tag"] != "")
+					if( !empty($run["tag"]) )
 					{
 						echo '
 								<tr>
 									<td style="border-right: 1px dotted #999;text-align:right;width: 100px;">' . $run['count'] . '</td>
-									<td style="border-right: 1px dotted #999;">' . $run['tag'] . '</td>
-									<td>' . $run['type'] . ' (<a href="/tags/edit/' . $run['id'] . '">edit</a>)</td>
+									<td style="border-right: 1px dotted #999;">' , $run['tag'] , '</td>
+									<td>' , $run['type'] , ' (<a href="', BASE_URL , '/tags/edit/' , $run['id'] , '">edit</a>)</td>
 								</tr>';
 					}
 				}
@@ -102,11 +99,8 @@
             <div id="pages">
         	
 				<?php
-					$type = '';
-                    if(isset($_GET["type"]))
-					{
-						$type = $_GET["type"] . '/';
-					}
+					$type = isset($_GET["type"]) ? $_GET['type'] . '/' : '';
+
 					if($pagenum > 0)
 					{
 						echo '<span><a href="/tags/list/' . $type . ($pagenum) . '">&laquo; Previous</a></span>';
