@@ -70,6 +70,11 @@
 include_once('tag_search.php');
 
 // Load the JS
+if( !is_array($head))
+{
+	$header_crap = $head;
+	unset($head);
+}
 if( !isset($head['js_load']) ) $head['js_load'] = array();
 array_unshift($head['js_load'],	'/lib/mootools.js',
 								'/lib/mootoolsmore.js',
@@ -105,6 +110,7 @@ $head['css_out']    =  '
 	<meta http-equiv="X-UA-Compatible" content="IE=8" />
 	<title><?php echo $page_title; ?></title>
 <?php
+	echo $header_crap;
 	$tab  = "\n	";
 	$tab2 = $tab . '	';
 

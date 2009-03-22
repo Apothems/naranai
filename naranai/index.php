@@ -24,35 +24,57 @@
 		$search_tags = array_unique($search_tags);
 		$title       = htmlspecialchars(implode(' ', $search_tags), ENT_QUOTES);
 		$search_tags = array_map('mysql_real_escape_string', $search_tags);
-		$search_tag = "HAVING LOCATE('" . implode("', tag) > 0 AND LOCATE('", $search_tags) . "', tag) > 0 ";
+		$find_colors = "WHERE 1=1";
+		$count = count($search_tags);
+		for($i = 0; $i < $count; $i++)
+		{
+			if(iscolor($search_tags[$i]))
+			{
+				$find_colors .= " AND (i.primary_color = '" . $search_tags[$i] . "' OR i.secondary_color = '" . $search_tags[$i] . "' OR i.tertiary_color = '" . $search_tags[$i] . "')";
+				unset($search_tags[$i]);
+			}
+		}
+		if(!empty($search_tags))
+		{
+			$search_tag = "HAVING LOCATE('" . implode("', tags) > 0 AND LOCATE('", $search_tags) . "', tags) > 0 ";
+		}
+		else
+		{
+			$search_tag = "";
+		}
 	}
 
 	$page_title = "Viewing " . $title . " - " . SITE_NAME;
 
-	$sql = "SELECT SQL_CALC_FOUND_ROWS i.id, i.hash, group_concat(t.tag separator ' ') as tag, group_concat(t.count separator ' ') as count, group_concat(t.type separator ' ') as type FROM `images` i LEFT OUTER JOIN `image_tags` s ON i.id = s.image_id LEFT OUTER JOIN `tags` t ON s.tag_id = t.id GROUP BY i.id " . $search_tag . "ORDER BY i.id DESC LIMIT " . $limit . ", " . $pics;
-
+	$sql = "SELECT SQL_CALC_FOUND_ROWS i.id, i.hash, group_concat(t.tag " . $tags_id . " separator ',') AS tags, group_concat(t.count separator ',') AS counts, group_concat(t.type separator ',') AS types FROM `images` i LEFT OUTER JOIN `image_tags` s ON i.id = s.image_id LEFT OUTER JOIN `tags` t ON s.tag_id = t.id " . $find_colors . " GROUP BY i.id " . $search_tag . "ORDER BY i.id DESC LIMIT " . $limit . ", " . $pics;
 	$get = mysql_query($sql);
 	$sql = "";
 
 	while( $run = mysql_fetch_assoc($get) )
 	{
-		$id['id'][]   = $run['id'];
-		$id['hash'][] = $run['hash'];
-		$tags[]       = $run['tag'];
-		$counts[]     = $run['count'];
-		$types[]      = $run['type'];
+		$id['id'][] .= $run['id'];
+		$id['tags'][] .= $run['tags'];
+		$id['hash'][] .= $run['hash'];
+		$tags .= $run['tags'] . ',';
+		$counts .= $run['counts'] . ',';
+		$types .= $run['types'] . ',';
 	}
-	$id['tags'] = $tags;
 
 	if( mysql_num_rows($get) ) {
-		$counts_proper = array();
-		$size          = sizeof($counts);
-		for($i = 0; $i < $size; ++$i) $counts_proper[] = array($counts[$i], $types[$i]);
+		$tags = explode(",", $tags);
+		$counts = explode(",", $counts);
+		$types = explode(",", $types);
+		for($i = 0; $i < count($counts); $i++)
+		{
+			$counts_proper[] .=  $counts[$i] . ':' . $types[$i];
+		}
 		$counts = "";
-		$types  = "";
 		$tags = array_combine($tags, $counts_proper);
+		 
+		array_pop($tags);
 		arsort($tags, SORT_NUMERIC);
 		$tags = array_slice($tags, 0, 15);
+		array_pop($tags);
 	}
 
 	$pages = ceil(mysql_found_rows() / $pics);
@@ -92,13 +114,8 @@
             	<?php
 					foreach($tags as $tag => $count)
 					{
-						$stags = explode(' ', $tag);
-						$count[0] = explode(' ', $count[0]);
-						$count[1] = explode(' ', $count[1]);
-
-						foreach($stags as $i => $s) {
-							echo '<a href="', BASE_URL , '/post/list/' . $s . '" class="' . $count[1][$i] . '">' , str_replace('_', ' ', $s) , '</a> ' . $count[0][$i] . '<br />';
-						}
+						$count = explode(":", $count);
+						echo '<a href="'  . BASE_URL . '/post/list/' . $tag . '" class="' . $count[1] . '">' . $tag . '</a> ' . $count[0] . '<br />';
 					}
 				?>
             </div>
@@ -118,16 +135,20 @@
 				$size       = sizeof($id['id']);
 				for($i = 0; $i < $size; ++$i)
 				{
-					$imgtags = $id['tags'][$i];
-					$class = "";
-					if (ereg('tagme', $imgtags) || $imgtags == "") 
+					$imgtags = str_replace(",", " ", $id['tags'][$i]);
+			        $class = "";
+					if(ereg('tagme', $imgtags)) 
 					{
 						$class = ' class="tagme"';
+					}
+					elseif($imgtags == "") 
+					{
+						$class = ' class="tagless"';
 					}
 					echo '
 							<span class="list_image">
 								<a href="', BASE_URL , '/post/view/' , $id['id'][$i] , '">
-									<img src="',  BASE_URL , '/thumbs/' , $id['hash'][$i] , '.jpg" alt="' , $imgtags , '" title="' , str_replace('_', ' ', $imgtags) , '"' , $class , ' />
+									<img src="',  BASE_URL , '/thumbs/' , $id['hash'][$i] , '.jpg" alt="' , $imgtags , '" title="' , $imgtags , '"' , $class , ' />
 								</a>
 							</span>';
 				}

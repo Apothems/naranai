@@ -1,6 +1,7 @@
 <?php
 require_once('hibbity/dbinfo.php');
-
+include_once('lib/colors.inc.php');
+include_once('lib/color_to_name.php');
 $result = array();
  
 if( isset($_FILES['photoupload']) )
@@ -11,24 +12,33 @@ if( isset($_FILES['photoupload']) )
 	$error    = false;
 	$size     = false;
 	$group    = mysql_real_escape_string(urldecode($_GET["group"]));
+	$checksum = md5_file($file);
+	$errsql	  = "SELECT count(*) FROM `images` WHERE `hash` = '" . $checksum . "'";
+	$errcount = mysql_result(mysql_query($errsql), 0);
 
-	if( !is_uploaded_file($file) || ($_FILES['photoupload']['size'] > 7 * 1024 * 1024) )
+	
+	if(!is_uploaded_file($file) || ($_FILES['photoupload']['size'] > 7 * 1024 * 1024))
 	{
 		$error = 'Please upload only files smaller than 7Mb!';
 	}
-	if( !$error && !($size = @getimagesize($file)) )
+	if(!$error && !($size = @getimagesize($file)))
 	{
 		$error = 'Please upload only images, no other files are supported.';
 	}
-	if (!$error && !in_array($size[2], array(1, 2, 3, 7, 8) ) )
+	if(!$error && !in_array($size[2], array(1, 2, 3, 7, 8)))
 	{
 		$error = 'Please upload only images of type JPEG, PNG, or GIF.';
 	}
-	if (!$error && ($size[0] < 25) || ($size[1] < 25))
+	if(!$error && ($size[0] < 25) || ($size[1] < 25))
 	{
 		$error = 'Please upload an image bigger than 25px.';
 	}
-	//CREATE MD% SUMMING SHIT
+	if(!$error && $errcount > 0)
+	{
+		$error = 'Duplicate image detected.';
+	}
+
+	//CREATE MD5 SUMMING SHIT
  
 	if( $error )
 	{
@@ -37,11 +47,11 @@ if( isset($_FILES['photoupload']) )
 	}
 	else
 	{
-			$hash = md5($name.$filesize.$file.microtime());
-			$ab   = substr($hash, 0, 2);
-			$ext  = explode(".", $name);
-			$ext  = array_pop($ext);
-			$user = 1;
+			$hash 		= $checksum;
+			$ab   		= substr($hash, 0, 2);
+			$ext  		= explode(".", $name);
+			$ext  		= array_pop($ext);
+			$user 		= 1;
 			if($_GET["user_id"])
 			{
 				$user = mysql_real_escape_string($_GET["user_id"]);;
@@ -102,17 +112,14 @@ if( isset($_FILES['photoupload']) )
 			
 			imagecopyresampled($thumb, $source, 0, 0, 0, 0, $new_img_width, $new_img_height, $current_img_width, $current_img_height);
 			imagejpeg($thumb, $thumb_name, 90);
-/*			
-			//$make_magick = system("convert -format jpeg -quality 85 -compress JPEG -thumbnail $new_img_width x $new_img_height $image_name $thumb_name", $retval);
-			// Did it work?
-			if (!($retval)) {
-					
-			}
-			else {
-				$result['result'] = 'error';
-				$result['error'] = 'Thumb creation failed.';
-			}
-*/
+			$ex=new GetMostCommonColors();
+			$ex->image=$thumb;	
+			$colors=$ex->Get_Color();
+			$how_many=2; // zero based.
+			$colors_key=array_keys($colors);
+			$primary_color   = color_to_name($colors_key[0]);
+			$secondary_color = color_to_name($colors_key[1]);
+			$tertiary_color  = color_to_name($colors_key[2]);
 			
 			
 			$sql = "INSERT INTO images(
@@ -124,7 +131,10 @@ if( isset($_FILES['photoupload']) )
 									   ext,
 									   width,
 									   height,
-									   posted
+									   posted,
+									   primary_color,
+									   secondary_color,
+									   tertiary_color
 									  )
 								VALUES(
 									   " . $user . ",
@@ -135,7 +145,10 @@ if( isset($_FILES['photoupload']) )
 									   '" . $ext . "',
 									   " . $size[0] . ",
 									   " . $size[1] . ",
-									   '" . date('Y-m-d H:i:s') . "'
+									   '" . date('Y-m-d H:i:s') . "',
+									   '" . strtolower($primary_color[2]) . "',
+									   '" . strtolower($secondary_color[2]) . "',
+									   '" . strtolower($tertiary_color[2]) . "'
 									  )";
 			mysql_query($sql);
 			$id = mysql_insert_id();

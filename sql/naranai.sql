@@ -228,3 +228,10 @@ CREATE TABLE IF NOT EXISTS `users` (
   PRIMARY KEY  (`id`),
   UNIQUE KEY `users__name` (`name`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
+
+--
+-- Add an Anonymous motherfucker.
+--
+
+INSERT INTO `users` (`id`, `name`, `pass`, `joindate`, `admin`, `email`) VALUES
+(1, 'Anonymous', NULL, '1970-01-01 00:00:01', 'N', NULL);

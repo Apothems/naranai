@@ -11,8 +11,8 @@
 	while($run = mysql_fetch_assoc($get))
 	{
 		$ab = substr($run['hash'], 0, 2);
-		$thumb_name = "/home/digiwombat/iki/img/thumbs/" . $ab . "/" . $run['hash'];
-		$image_name = "/home/digiwombat/iki/img/images/" . $ab . "/" . $run['hash'];
+		$thumb_name = SITE_DIR . "/thumbs/" . $ab . "/" . $run['hash'];
+		$image_name = SITE_DIR . "/images/" . $ab . "/" . $run['hash'];
 		unlink($thumb_name);
 		echo "Removed thumb for " . $run['image_id'] . "<br />";
 		unlink($image_name);

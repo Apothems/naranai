@@ -1,0 +1,14 @@
+PREREQS
+------------
+PHP 5.x with GD
+MySQL 5.x
+
+
+INSTALLATION
+------------
+
+1. Upload all the files in the naranai folder to your website.
+2. Use the SQL file to create all the proper tables and such.
+3. Edit both the files in the naranai/hibbity folder to reflect the proper settings.
+4. Add two folders in the base naranai directory called images and thumbs and chmod them to 755.
+5. Add an account for yourself through the register page and then set yourself as an admin in the DB with phpMyAdmin or whatever. (Optional)

@@ -98,6 +98,18 @@ function isadmin()
 	return ISADMIN;
 }
 
+function iscolor($search)
+{
+	$search = strtolower($search);
+	$colors = array("red","orange","yellow","green","blue","violet","brown","black","grey","white");
+	$check	= in_array($search, $colors);
+	if(!$check)
+	{
+		return false;
+	}
+	return true;
+}
+
 function mysql_found_rows() {
 	return mysql_result(mysql_query("SELECT FOUND_ROWS()"), 0);
 }

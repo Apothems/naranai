@@ -1,7 +1,7 @@
 <?php
 	require_once('hibbity/dbinfo.php');
 	require_once(SITE_DIR . '/lib/functions.php');
-	
+
 	if( !isset($_COOKIE["user_id"]) ) {
 		$sql      = "SELECT COUNT(*) as uploads FROM `images` WHERE `posted` >= DATE_SUB(CURDATE(),INTERVAL 1 DAY) AND `owner_ip` = '" . $_SERVER['REMOTE_ADDR'] . "'";
 		$uploaded = intval(mysql_result(mysql_query($sql), 0));
@@ -29,7 +29,7 @@
 			fieldName: 'photoupload',
 			path: '" . BASE_URL . "/lib/Swiff.Uploader.swf',
 			limitSize: 2 * 1024 * 1024,
-			limitFiles: 10,
+			limitFiles: " . MAX_UPLOADS . ",
 			onLoad: function() {
 				$('upload_status').removeClass('hide');
 				$('form_fallback').destroy();
@@ -97,7 +97,7 @@
         <div class="spacer"></div>
     	
         <?php
-			if( $uploaded < 10 )
+			if( $uploaded < ANON_UPLOADS )
 			{
 		?>
 	    <form class="registration" id="upload_form" action="<?php echo BASE_URL; ?>/uploader/<?php echo $_COOKIE["user_id"] ?>" method="post">

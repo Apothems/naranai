@@ -1,4 +1,5 @@
 <?php
+	require_once("../hibbity/dbinfo.php");
 	require_once('../lib/functions.php');
 	if(!isadmin($_COOKIE['user_id']))
 	{
@@ -6,8 +7,6 @@
 		exit();
 	}
 	
-	require_once("/home/digiwombat/hosteeconn.php");
-	mysql_select_db("iki_image");
 	
 	$id  = $_GET["picture_id_number"];
 	
@@ -16,8 +15,8 @@
 	
 	$hash = $run['hash'];
 	$ab = substr($hash, 0, 2);
-	$thumb_name = "/home/digiwombat/iki/img/thumbs/" . $ab . "/" . $hash;
-	$image_name = "/home/digiwombat/iki/img/images/" . $ab . "/" . $hash;
+	$thumb_name = SITE_DIR . "/thumbs/" . $ab . "/" . $hash;
+	$image_name = SITE_DIR . "/images/" . $ab . "/" . $hash;
 	
 	unlink($thumb_name);
 	unlink($image_name);

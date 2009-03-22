@@ -1,8 +1,8 @@
 <?php
 
-	require_once("/home/digiwombat/hosteeconn.php");
-	mysql_select_db("iki_image");
-	
+	require_once("../hibbity/dbinfo.php");
+	include_once('../lib/colors.inc.php');
+	include_once('../lib/color_to_name.php');
 	$urls 	  = $_GET["url"];
 	$urls 	  = array_unique($urls);
 	$username = "Anonymous";
@@ -34,8 +34,8 @@
 				$hash = md5($url.microtime());
 				$ab = substr($hash, 0, 2);
 				$max_width = '192';
-				$thumb_name = "/home/digiwombat/iki/img/thumbs/" . $ab . "/" . $hash;
-				$image_name = "/home/digiwombat/iki/img/images/" . $ab . "/" . $hash;
+				$thumb_name = SITE_DIR . "/thumbs/" . $ab . "/" . $hash;
+				$image_name = SITE_DIR . "/images/" . $ab . "/" . $hash;
 				
 				if(eregi("pixiv.net", $url))
 				{
@@ -94,6 +94,15 @@
 				imagecopyresampled($thumb, $source, 0, 0, 0, 0, $new_img_width, $new_img_height, $current_img_width, $current_img_height) or die("Bad reample?.");
 				imagejpeg($thumb, $thumb_name, 90) or die("Create thumb file failed.");
 				
+				$ex=new GetMostCommonColors();
+				$ex->image=$thumb;	
+				$colors=$ex->Get_Color();
+				$how_many=2; // zero based.
+				$colors_key=array_keys($colors);
+				$primary_color   = color_to_name($colors_key[0]);
+				$secondary_color = color_to_name($colors_key[1]);
+				$tertiary_color  = color_to_name($colors_key[2]);
+				
 				$ip  = "255.255.255.255";
 				$filesize = filesize($image_name);
 				$note = "Linked in IRC by " . $username;
@@ -136,7 +145,10 @@
 											   height,
 											   source,
 											   note,
-											   posted
+											   posted,
+										   primary_color,
+										   secondary_color,
+										   tertiary_color
 											  )
 										VALUES(
 											   " . $user . ",
@@ -149,7 +161,10 @@
 											   " . $size[1] . ",
 											   '" . mysql_real_escape_string($url) . "',
 											   '" . $note . "',
-											   '" . date('Y-m-d H:i:s') . "'
+											   '" . date('Y-m-d H:i:s') . "',
+											   '" . strtolower($primary_color[2]) . "',
+												'" . strtolower($secondary_color[2]) . "',
+											   '" . strtolower($tertiary_color[2]) . "'
 											  )";
 				mysql_query($sql_add) or die("Fucked up.");
 				

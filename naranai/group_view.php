@@ -21,30 +21,34 @@
 	$counts     = array();
 	$types      = array();
 	
-	$sql = "SELECT SQL_CALC_FOUND_ROWS i.id, i.hash, group_concat(t.tag separator ' ') AS tags, group_concat(t.count separator ' ') AS counts, group_concat(t.type separator ' ') AS types FROM `images` i LEFT OUTER JOIN `image_tags` s ON  i.id = s.image_id LEFT OUTER JOIN `tags` t ON s.tag_id = t.id LEFT OUTER JOIN `image_groups` g ON i.id = g.image_id  WHERE group_id = " . $group . " GROUP BY i.id ORDER BY i.id DESC LIMIT " . $limit . ", " . $pics;
-	$get = mysql_query($sql);
+	$sql = "SELECT SQL_CALC_FOUND_ROWS i.id, i.hash, group_concat(t.tag " . $tags_id . " separator ',') AS tags, group_concat(t.count separator ',') AS counts, group_concat(t.type separator ',') AS types FROM `images` i LEFT OUTER JOIN `image_tags` s ON i.id = s.image_id LEFT OUTER JOIN `tags` t ON s.tag_id = t.id LEFT OUTER JOIN `image_groups` g ON i.id = g.image_id WHERE group_id = " . $group . " GROUP BY i.id ORDER BY i.id DESC LIMIT " . $limit . ", " . $pics;
+  	$get = mysql_query($sql);
 	
 	while( $run = mysql_fetch_assoc($get) )
 	{
-		$id['id'][]   = $run['id'];
-		$id['hash'][] = $run['hash'];
-		$tags[]       = $run['tags'];
-		$counts[]     = $run['counts'];
-		$types[]      = $run['types'];
+		$id['id'][] .= $run['id'];
+		$id['tags'][] .= $run['tags'];
+		$id['hash'][] .= $run['hash'];
+		$tags .= $run['tags'] . ',';
+		$counts .= $run['counts'] . ',';
+		$types .= $run['types'] . ',';
 	}
 
-	$id['tags'] = $tags;
-	$sql        = "";
-
 	if( mysql_num_rows($get) ) {
-		$counts_proper = array();
-		$size          = sizeof($counts);
-		for($i = 0; $i < $size; ++$i) $counts_proper[] = array($counts[$i], $types[$i]);
+		$tags = explode(",", $tags);
+		$counts = explode(",", $counts);
+		$types = explode(",", $types);
+		for($i = 0; $i < count($counts); $i++)
+		{
+			$counts_proper[] .=  $counts[$i] . ':' . $types[$i];
+		}
 		$counts = "";
-		$types  = "";
 		$tags = array_combine($tags, $counts_proper);
+		 
+		array_pop($tags);
 		arsort($tags, SORT_NUMERIC);
 		$tags = array_slice($tags, 0, 15);
+		array_pop($tags);
 	}
 	
 	$sql   = "SELECT group_name FROM groups WHERE id = " . $group . " LIMIT 1";
@@ -89,13 +93,8 @@
             	<?php
 					foreach($tags as $tag => $count)
 					{
-						$stags = explode(' ', $tag);
-						$count[0] = explode(' ', $count[0]);
-						$count[1] = explode(' ', $count[1]);
-
-						foreach($stags as $i => $s) {
-							echo '<a href="', BASE_URL , '/post/list/' . $s . '" class="' . $count[1][$i] . '">' , str_replace('_', ' ', $s) , '</a> ' . $count[0][$i] . '<br />';
-						}
+						$count = explode(":", $count);
+						echo '<a href="'  . BASE_URL . '/post/list/' . $tag . '" class="' . $count[1] . '">' . $tag . '</a> ' . $count[0] . '<br />';
 					}
 				?>
             </div>
@@ -112,7 +111,6 @@
 	    </div>
         <div class="spacer"></div>
     		<?php
-				$id['tags'] = str_replace('_', ' ', $id['tags']);
 				$size       = sizeof($id['id']);
 				for($i = 0; $i < $size; ++$i)
 				{	
