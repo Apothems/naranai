@@ -1,8 +1,7 @@
 <?php
-
 	require_once('hibbity/dbinfo.php');
 	
-	if($_COOKIE["user_id"])
+	if( isset($_COOKIE["user_id"]) )
 	{
 		header("Location: " . BASE_URL . "/post/list");
 		exit();
@@ -25,18 +24,16 @@
 	}
 	
 	$page_type = "post";
-	$head 		= ' <script src="' . BASE_URL . '/lib/formcheck.js" type="text/javascript"></script>
-					<script type="text/javascript">
+	$head      = array
+			(
+				'js_load' => '/lib/formcheck.js',
+				'js_out'  => '
+	window.addEvent(\'domready\', function(){
+		new FormCheck(\'registration_form\');
+	});',
+				'css_load' => '/styles/formcheck.css'
+			);
 
-						window.addEvent(\'domready\', function(){
-								new FormCheck(\'registration_form\');
-						});
-
-					</script>
-					<style type="text/css">
-						@import url(\'' . BASE_URL . '/styles/formcheck.css\');
-					</style>
-					';
 	$page_title = "Registration - " . SITE_NAME;
 	
 	require_once("header.php");

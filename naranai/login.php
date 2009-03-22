@@ -3,18 +3,16 @@
 	require_once('hibbity/dbinfo.php');
 	
 	$page_type = "post";
-	$head 		= ' <script src="' . BASE_URL . '/lib/formcheck.js" type="text/javascript"></script>
-					<script type="text/javascript">
+	$head      = array
+			(	
+				'js_load' => array('/lib/formcheck.js'),
+				'js_out'  => '
+	window.addEvent(\'domready\', function(){
+		new FormCheck(\'login_form\');
+	});',
+				'css_load' => array('/styles/formcheck.css')
+			);
 
-						window.addEvent(\'domready\', function(){
-								new FormCheck(\'login_form\');
-						});
-
-					</script>
-					<style type="text/css">
-						@import url(\'' . BASE_URL . '/styles/formcheck.css\');
-					</style>
-					';
 	$page_title = "Login - " . SITE_NAME;
 	
 	
