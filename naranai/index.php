@@ -60,22 +60,20 @@
 		$types .= $run['types'] . ',';
 	}
 
-	if( mysql_num_rows($get) ) {
-		$tags = explode(",", $tags);
-		$counts = explode(",", $counts);
-		$types = explode(",", $types);
-		for($i = 0; $i < count($counts); $i++)
-		{
-			$counts_proper[] .=  $counts[$i] . ':' . $types[$i];
-		}
-		$counts = "";
-		$tags = array_combine($tags, $counts_proper);
-		 
-		array_pop($tags);
-		arsort($tags, SORT_NUMERIC);
-		$tags = array_slice($tags, 0, 15);
-		array_pop($tags);
+	$tags = explode(",", $tags);
+	$counts = explode(",", $counts);
+	$types = explode(",", $types);
+	for($i = 0; $i < count($counts); $i++)
+	{
+		$counts_proper[] .=  $counts[$i] . ':' . $types[$i];
 	}
+	$counts = "";
+	$tags = array_combine($tags, $counts_proper);
+	 
+	array_pop($tags);
+	arsort($tags, SORT_NUMERIC);
+	$tags = array_slice($tags, 0, 15);
+	array_pop($tags);
 
 	$pages = ceil(mysql_found_rows() / $pics);
 	require_once("header.php");

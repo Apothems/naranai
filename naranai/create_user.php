@@ -1,9 +1,5 @@
 <?php
-
 require_once('hibbity/dbinfo.php');
-
-
-
 
 if(isset($_POST["username"]) && isset($_POST["password"]) && isset($_POST["email"]) && isset($_POST["agree"]))
 	{
@@ -51,6 +47,4 @@ else
 	header("Location: " . BASE_URL . "/register/err/415");
 	exit();
 }
-
-
 ?>

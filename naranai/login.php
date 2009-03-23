@@ -5,12 +5,12 @@
 	$page_type = "post";
 	$head      = array
 			(	
-				'js_load' => array('/lib/formcheck.js'),
+				'js_load' => '/lib/formcheck.js',
 				'js_out'  => '
 	window.addEvent(\'domready\', function(){
 		new FormCheck(\'login_form\');
 	});',
-				'css_load' => array('/styles/formcheck.css')
+				'css_load' => '/styles/formcheck.css'
 			);
 
 	$page_title = "Login - " . SITE_NAME;

@@ -6,6 +6,10 @@
 						'Upload'		=> '/post/upload',
 						'Help'			=> '#' # /help
 					);
+	$comments_menu = array
+					(
+						'List'          => '/comment/list'
+					);
 	$tags_menu =	array
 					(
 					 	'List'	 	 	=> '/tags/list',
@@ -37,12 +41,16 @@
 						</div>
 					</div>';
 
-	$post_active = $tags_active = $account_active = $groups_active = $post = '';
+	$post_active = $comments_active = $tags_active = $account_active = $groups_active = $post = '';
 	switch($page_type)
 	{
 		case "post":
 			$menu = $post_menu;
 			$post_active = ' class="active"';
+			break;
+		case "comments":
+			$menu = $comments_menu;
+			$comments_active = ' class="active"';
 			break;
 		case "tags":
 			$menu = $tags_menu;
@@ -75,7 +83,7 @@ if( !is_array($head))
 	$header_crap = $head;
 	unset($head);
 }
-if( !isset($head['js_load']) ) $head['js_load'] = array();
+if( !isset($head['js_load']) ) $head['js_load'] = array(); else $head['js_load'] = (array)$head['js_load'];
 array_unshift($head['js_load'],	'/lib/mootools.js',
 								'/lib/mootoolsmore.js',
 								'/lib/observer.js',
@@ -94,7 +102,7 @@ $head['js_out'] =  "
 	});" . (isset($head['js_out']) ? $head['js_out'] : '' );
 
 // Load the CSS
-if( !isset($head['css_load']) ) $head['css_load'] = array();
+if( !isset($head['css_load']) ) $head['css_load'] = array(); else $head['css_load'] = (array)$head['css_load'];
 array_unshift($head['css_load'], '/styles/style.css', '/styles/autocompleter.css');
 $head['css_out']    =  '
 	<!--[if lt IE 8]>
@@ -111,6 +119,7 @@ $head['css_out']    =  '
 	<title><?php echo $page_title; ?></title>
 <?php
 	echo $header_crap;
+
 	$tab  = "\n	";
 	$tab2 = $tab . '	';
 
@@ -157,6 +166,11 @@ $head['css_out']    =  '
             	Posts
 			</a>
         </span>
+		<span<?php echo $comments_active; ?>>
+			<a href="<?php echo BASE_URL; ?>/comment/list">
+				Comments
+			</a>
+		</span>
         <span<?php echo $tags_active; ?>>
         	<a href="<?php echo BASE_URL; ?>/tags/list">
             	Tags
