@@ -9,8 +9,9 @@
 	$limit     = $pics * $pagenum;
 	$comments  = array();
 	$ids       = array();
+	$head      = array('css_load' => '/styles/comments.css');
 
-	$sql = "SELECT image_id FROM `comments` GROUP BY image_id ORDER BY posted DESC LIMIT " . $limit . ", " . $pics;
+	$sql = "SELECT SQL_CALC_FOUND_ROWS image_id FROM `comments` GROUP BY image_id ORDER BY posted DESC LIMIT " . $limit . ", " . $pics;
 
 	$get = mysql_query($sql);
 	$sql = "";
@@ -18,12 +19,12 @@
 	while( $run = mysql_fetch_assoc($get) ) $ids[] = $run['image_id'];
 	$pages = ceil(mysql_found_rows() / $pics);
 
-	$sql = "SELECT SQL_CALC_FOUND_ROWS i.id, i.hash, i.posted, i.rating, group_concat(t.tag separator ',') AS tags, group_concat(t.count separator ',') AS counts, group_concat(t.type separator ',') AS types, u.name FROM `images` i LEFT OUTER JOIN `image_tags` s ON i.id = s.image_id LEFT OUTER JOIN `tags` t ON s.tag_id = t.id LEFT OUTER JOIN `users` u ON i.owner_id = u.id WHERE i.id IN('" . implode("', '", $ids) . "') GROUP BY i.id ORDER BY i.id DESC";
+	$sql = "SELECT i.id, i.hash, i.posted, i.rating, group_concat(t.tag separator ',') AS tags, group_concat(t.count separator ',') AS counts, group_concat(t.type separator ',') AS types, u.name FROM `images` i LEFT OUTER JOIN `image_tags` s ON i.id = s.image_id LEFT OUTER JOIN `tags` t ON s.tag_id = t.id LEFT OUTER JOIN `users` u ON i.owner_id = u.id WHERE i.id IN('" . implode("', '", $ids) . "') GROUP BY i.id ORDER BY i.id DESC";
 
 	$get = mysql_query($sql);
 	$sql = '';
 	while( $run = mysql_fetch_assoc($get) ) {
-		$comments[] = $run;
+		$comments[$run['id']] = $run;
 		$tags .= $run['tags'] . ',';
 		$counts .= $run['counts'] . ',';
 		$types .= $run['types'] . ',';
@@ -98,9 +99,12 @@
     		Comments Page up.
 	    </div>
         <div class="spacer"></div>
+		   <div id="comments">
     		<?php
-				foreach($comments as $comment)
+				$i = 0;
+				foreach($ids as $id)
 				{
+					$comment = $comments[$id];
 					$imgtags = $comment['tags'];
 			        $class = "";
 					if(ereg('tagme', $imgtags)) 
@@ -137,29 +141,27 @@
 
 					$tags = '<span class="tags">' . implode('</span> <span class="tags">', $tags) . '</span>';
 					echo '
-			<div class="col">
-				<a href="', BASE_URL , '/post/view/', $comment['id'] ,'"><img src="',  BASE_URL , '/thumbs/' , $comment['hash'] , '.jpg" alt="' , $imgtags , '" title="' , $imgtags , '"' , $class , ' /></a>
-			</div>
-			  <div class="col" id="comments-for-p', $comment['id'] ,'">
-				<div class="header">
-				  <div>
-					<span class="info"><strong>Date</strong> ', fuzzy_time($comment['posted']) , '</span>
-					<span class="info"><strong>User</strong> ', $comment['name'] ,'</a></span>
-					<span class="info"><strong>Rating</strong> ', $rating , '</span>
-				  </div>
-				  <div>
-					<strong>Tags</strong>
-					
-					  ', $tags , '
-					
-				  </div>
-				</div>
-			</div>
-			<ol class="comment">';
+			<ol class="comment"', $i++ == 0 ? '' : ' style="clear: left;"' , '>
+				<li id="post-', $comment['id'] , '">
+					<span class="info">
+						<span><a href="', BASE_URL , '/post/view/', $comment['id'] ,'"><img src="',  BASE_URL , '/thumbs/' , $comment['hash'] , '.jpg" alt="' , $imgtags , '" title="' , $imgtags , '"' , $class , ' /></a></span>
+						<span class="time">
+						<span class="info"><strong>Date</strong> ', fuzzy_time($comment['posted']) , '</span>
+						<span class="info"><strong>User</strong> ', $comment['name'] ,'</a></span>
+						<span class="info"><strong>Rating</strong> ', $rating , '</span>
+						<span class="info"><strong>Tags</strong> ', $tags , '</span>
+
+					<div class="content">
+						<ol class="comment">';
 
 					$sql_block = "SELECT c.id, u.name, c.posted, c.comment FROM `comments` c LEFT OUTER JOIN `users` u ON c.owner_id = u.id WHERE c.image_id = " . $comment['id'] . " ORDER BY c.id DESC LIMIT 5";
 					$get_block = mysql_query($sql_block);
-					while($run_block = mysql_fetch_assoc($get_block))
+					$comcontent = array();
+					while($run_block = mysql_fetch_assoc($get_block)) $comcontent[] = $run_block;
+					$comcontent = array_reverse($comcontent);
+
+					// It's there... it's just not shown...
+					foreach($comcontent as $run_block)
 					{ ?>
 				<li id="comment-<?php echo $run_block['id'] ?>">
 					<span class="info">
@@ -185,9 +187,14 @@
 					</li>
 			<?php
 					}
-				echo '</ol>';
+				echo '</ol>
+				</div>
+				</li>
+			</ol>';
+				
 				}
 			?>
+		</div>
 		
         <div id="pages">
 			<?php
